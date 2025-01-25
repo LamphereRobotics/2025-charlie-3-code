@@ -13,24 +13,20 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.AimBotSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoCommand extends SequentialCommandGroup {
 	/** Creates a new AutoCommand. */
-	public AutoCommand(boolean doShoot, double startAngle, double startDelay, DriveSubsystem robotDrive,
-			AimBotSubsystem aimBot, ShooterSubsystem shooter) {
+	public AutoCommand(boolean doShoot, double startAngle, double startDelay, DriveSubsystem robotDrive) {
 		// Create config for trajectory
 		TrajectoryConfig config = new TrajectoryConfig(
 				AutoConstants.kMaxSpeedMetersPerSecond,
@@ -69,12 +65,6 @@ public class AutoCommand extends SequentialCommandGroup {
 				new InstantCommand(
 						() -> robotDrive.resetOdometry(exampleTrajectory.getInitialPose())),
 				new WaitCommand(startDelay),
-				new ConditionalCommand(
-						new Aim(57, aimBot).andThen(new Shoot(.4, shooter).andThen(new InstantCommand(() -> {
-							shooter.stopShoot();
-							shooter.stopKicky();
-						}, shooter)).andThen(aimBot.storeArmCommand())), new InstantCommand(),
-						() -> doShoot),
 				swerveControllerCommand,
 				new InstantCommand(() -> robotDrive.drive(0, 0, 0, false)));
 
