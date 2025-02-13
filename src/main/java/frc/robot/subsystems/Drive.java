@@ -4,17 +4,13 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +32,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-public class DriveSubsystem extends SubsystemBase {
+public class Drive extends SubsystemBase {
   // Robot swerve modules
   private final SwerveModule m_frontLeft = new SwerveModule(
       DriveConstants.kFrontLeftDriveMotorPort,
@@ -74,9 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      }
-      ,Pose2d.kZero);
-
+      }, Pose2d.kZero);
 
   private boolean m_slowMode = false;
   private boolean m_fieldRelative = true;
@@ -84,9 +78,9 @@ public class DriveSubsystem extends SubsystemBase {
   private Translation2d m_velocity = Translation2d.kZero;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public Drive() {
     RobotConfig config = new RobotConfig(1, 1, null);
-    try{
+    try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
@@ -95,30 +89,33 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
+                                                              // ChassisSpeeds. Also optionally outputs individual
+                                                              // module feedforwards
+        new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
+                                        // drive trains
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+        ),
+        config, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
     );
 
-    
   }
 
   @Override
@@ -133,10 +130,10 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
     useMegaTag2VisionEstimate();
-    
+
     m_velocity = m_poseEstimator.getEstimatedPosition().getTranslation().minus(m_prevPose.getTranslation()).div(0.02);
     m_prevPose = m_poseEstimator.getEstimatedPosition();
-  
+
     m_frontLeft.logStateToDashboard("drive-front-left");
     m_frontRight.logStateToDashboard("drive-front-right");
     m_rearLeft.logStateToDashboard("drive-rear-left");
@@ -145,8 +142,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("drive-is-slow", m_slowMode);
     SmartDashboard.putBoolean("drive-is-field-relative",
         m_fieldRelative);
-	  SmartDashboard.putNumber("drive-pose-x", getPose().getX());
-	  SmartDashboard.putNumber("drive-pose-y", getPose().getY());
+    SmartDashboard.putNumber("drive-pose-x", getPose().getX());
+    SmartDashboard.putNumber("drive-pose-y", getPose().getY());
   }
 
   /**
@@ -291,18 +288,18 @@ public class DriveSubsystem extends SubsystemBase {
   public Command setFieldRelativeCommand(boolean fieldRelative) {
     return new InstantCommand(() -> m_fieldRelative = fieldRelative);
   }
-  
+
   private static double WithDeadband(double deadband, double thumbstick) {
     return Math.abs(thumbstick) < deadband ? 0
         : ((Math.abs(thumbstick) - deadband) / (1 - deadband) * Math.signum(thumbstick));
   }
 
-  private ChassisSpeeds getRobotRelativeSpeeds(){
+  private ChassisSpeeds getRobotRelativeSpeeds() {
     var speeds = new ChassisSpeeds(m_velocity.getX(), m_velocity.getY(), getTurnRate().in(RadiansPerSecond));
-    return speeds; 
+    return speeds;
   }
-  
-  private void driveRobotRelative(ChassisSpeeds speed){
+
+  private void driveRobotRelative(ChassisSpeeds speed) {
 
   }
 

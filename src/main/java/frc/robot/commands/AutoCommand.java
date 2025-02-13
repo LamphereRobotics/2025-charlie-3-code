@@ -19,14 +19,14 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Drive;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoCommand extends SequentialCommandGroup {
 	/** Creates a new AutoCommand. */
-	public AutoCommand(boolean doShoot, double startAngle, double startDelay, DriveSubsystem robotDrive) {
+	public AutoCommand(boolean doShoot, double startAngle, double startDelay, Drive robotDrive) {
 		// Create config for trajectory
 		TrajectoryConfig config = new TrajectoryConfig(
 				AutoConstants.kMaxSpeedMetersPerSecond,

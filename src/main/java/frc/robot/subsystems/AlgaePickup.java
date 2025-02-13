@@ -6,9 +6,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AlgeePickupSubsystem extends SubsystemBase {
+public class AlgaePickup extends SubsystemBase {
   /** Creates a new AlgeePickupSubsystem. */
-  public AlgeePickupSubsystem() {}
+  public AlgaePickup() {
+  }
 
   @Override
   public void periodic() {

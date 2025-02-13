@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.security.PublicKey;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -77,7 +75,7 @@ public final class Constants {
     // your robot.
 
     public static final double kMaxSpeedMetersPerSecond = 4.2;
-    public static final double kMaxRotationRadiansPerSecond =  Math.PI * 2;
+    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2;
   }
 
   public static final class ModuleConstants {
@@ -94,7 +92,7 @@ public final class Constants {
     public static final double kVelocityToleranceModuleTurningController = 0.5;
     public static final double kIZoneModuleTurningController = 2.0;
     public static final double kIntegratorMaxModuleTurningController = 2.0;
-	
+
     public static final double kPModuleDriveController = 0.5;
     public static final double kIModuleDriveController = 0.0;
     public static final double kDModuleDriveController = 0.0;

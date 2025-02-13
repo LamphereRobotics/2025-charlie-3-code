@@ -10,13 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutoCommand;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outake;
-import frc.robot.subsystems.AlgeePickupSubsystem;
+import frc.robot.subsystems.AlgaePickup;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -30,17 +29,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 	// The robot's subsystems
-	private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-	private final ClimberSubsystem m_climber = new ClimberSubsystem();
-	private final Elevator m_elevator = new Elevator();
-	private final Intake m_intake = new Intake();
-	private final Outake m_outake = new Outake();
-	private final AlgeePickupSubsystem m_algeePickupSubsystem = new AlgeePickupSubsystem();
+	private final Drive robotDrive = new Drive();
+	private final Climber climber = new Climber();
+	private final Elevator elevator = new Elevator();
+	private final Intake intake = new Intake();
+	private final Outake outake = new Outake();
+	private final AlgaePickup algaePickupSubsystem = new AlgaePickup();
 
 	// The driver's controller
-	private final CommandXboxController m_driverController = new CommandXboxController(
+	private final CommandXboxController driverController = new CommandXboxController(
 			OIConstants.kDriverControllerPort);
-	private final CommandJoystick m_operatorsStick = new CommandJoystick(OIConstants.kOperatorStickPort);
+	private final CommandJoystick operatorsStick = new CommandJoystick(OIConstants.kOperatorStickPort);
 
 	private final SendableChooser<Command> m_autonomousChooser = new SendableChooser<Command>();
 
@@ -48,7 +47,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		m_robotDrive.zeroHeading();
+		robotDrive.zeroHeading();
 
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
 		SmartDashboard.putData(m_autonomousChooser);
@@ -57,8 +56,8 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// Configure default commands
-		m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
-		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
+		robotDrive.setDefaultCommand(robotDrive.driveTeleop(driverController));
+		elevator.setDefaultCommand(new RunCommand(elevator::stop, elevator));
 	}
 
 	/**
@@ -73,13 +72,13 @@ public class RobotContainer {
 
 	private void configureButtonBindings() {
 
-		m_operatorsStick.button(1).whileTrue(new RunCommand(m_elevator::moveUp, m_elevator));
-		m_operatorsStick.button(2).whileTrue(new RunCommand(m_elevator::moveDown, m_elevator));
-		m_driverController.a().onTrue(m_robotDrive.resetGyro());
-		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
-				.onFalse(m_robotDrive.setSlowModeCommand(false));
-		m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
-				.onFalse(m_robotDrive.setFieldRelativeCommand(true));
+		operatorsStick.button(1).whileTrue(new RunCommand(elevator::moveUp, elevator));
+		operatorsStick.button(2).whileTrue(new RunCommand(elevator::moveDown, elevator));
+		driverController.a().onTrue(robotDrive.resetGyro());
+		driverController.leftTrigger().onTrue(robotDrive.setSlowModeCommand(true))
+				.onFalse(robotDrive.setSlowModeCommand(false));
+		driverController.rightBumper().onTrue(robotDrive.setFieldRelativeCommand(false))
+				.onFalse(robotDrive.setFieldRelativeCommand(true));
 	}
 
 	/**
