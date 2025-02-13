@@ -19,6 +19,7 @@ import frc.robot.subsystems.Outake;
 import frc.robot.subsystems.AlgeePickupSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
@@ -31,10 +32,10 @@ public class RobotContainer {
 	// The robot's subsystems
 	private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
-	private final Elevator m_Elevator = new Elevator();
-	private final Intake m_Intake = new Intake();
-	private final Outake m_Outake = new Outake();
-	private final AlgeePickupSubsystem m_AlgeePickupSubsystem = new AlgeePickupSubsystem();
+	private final Elevator m_elevator = new Elevator();
+	private final Intake m_intake = new Intake();
+	private final Outake m_outake = new Outake();
+	private final AlgeePickupSubsystem m_algeePickupSubsystem = new AlgeePickupSubsystem();
 
 	// The driver's controller
 	private final CommandXboxController m_driverController = new CommandXboxController(
@@ -57,6 +58,7 @@ public class RobotContainer {
 
 		// Configure default commands
 		m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
+		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 	}
 
 	/**
@@ -70,8 +72,9 @@ public class RobotContainer {
 	 */
 
 	private void configureButtonBindings() {
-		
 
+		m_operatorsStick.button(1).whileTrue(new RunCommand(m_elevator::moveUp, m_elevator));
+		m_operatorsStick.button(2).whileTrue(new RunCommand(m_elevator::moveDown, m_elevator));
 		m_driverController.a().onTrue(m_robotDrive.resetGyro());
 		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 				.onFalse(m_robotDrive.setSlowModeCommand(false));

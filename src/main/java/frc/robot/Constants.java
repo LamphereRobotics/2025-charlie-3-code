@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.security.PublicKey;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -118,10 +120,9 @@ public final class Constants {
     public static final int kShootNSuckDos = 13;
   }
 
-  public static final class AimyConstants {
-    public static final int kAimyUno = 10;
-    public static final int kAimyDos = 11;
-    public static final int kAimyCancoder = 5;
+  public static final class ElevatorConstants {
+    public static final int kElevatorEins = 9;
+    public static final int kElevatorZwei = 10;
   }
 
   public static final class ClimberConstants {
