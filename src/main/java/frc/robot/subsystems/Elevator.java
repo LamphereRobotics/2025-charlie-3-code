@@ -32,15 +32,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 final class Config {
   public static final class LeaderMotor {
-    public static final int kCanId = 0;
+    public static final int kCanId = 9;
     public static final boolean kInverted = false;
     public static final IdleMode kIdleMode = IdleMode.kBrake;
     public static final MotorType kMotorType = MotorType.kBrushless;
   }
 
   public static final class FollowerMotor {
-    public static final int kCanId = 0;
-    public static final boolean kInverted = false;
+    public static final int kCanId = 10;
+    public static final boolean kInverted = true;
     public static final IdleMode kIdleMode = IdleMode.kBrake;
     public static final MotorType kMotorType = MotorType.kBrushless;
   }
@@ -86,15 +86,14 @@ final class Config {
     // Unit is volts / (inch * second)
     public static final double kI = 0;
     // TODO: Convert to unit type
-    // Unit is (volt * second) / inch
+    // Unit is volts / inch / second
     public static final double kD = 0;
 
     // Extra config
     public static final Distance kPositionTolerance = Inches.of(0);
     public static final LinearVelocity kVelocityTolerance = InchesPerSecond.of(0);
     public static final Distance kIZone = Inches.of(0);
-    // TODO: Convert to unit type
-    public static final double kIntegratorRange = 0;
+    public static final Voltage kIntegratorRange = Volts.of(0);
   }
 
   public static final class Constraints {
@@ -116,11 +115,11 @@ final class Config {
     public static final Voltage kVoltage = Volts.of(0.6);
   }
 
-  public static final DistanceUnit kDistanceUnit = Inches;
-  public static final LinearVelocityUnit kLinearVelocityUnit = InchesPerSecond;
-  public static final LinearAccelerationUnit kLinearAccelerationUnit = InchesPerSecond.per(Second);
-  public static final VoltageUnit kVoltageUnit = Volts;
   public static final TimeUnit kTimeUnit = Seconds;
+  public static final VoltageUnit kVoltageUnit = Volts;
+  public static final DistanceUnit kDistanceUnit = Inches;
+  public static final LinearVelocityUnit kLinearVelocityUnit = kDistanceUnit.per(kTimeUnit);
+  public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
 }
 
 public class Elevator extends SubsystemBase {
@@ -130,10 +129,12 @@ public class Elevator extends SubsystemBase {
   private final SparkMax followerMotor = new SparkMax(Config.FollowerMotor.kCanId,
       Config.FollowerMotor.kMotorType);
   private final RelativeEncoder encoder = leaderMotor.getEncoder();
+
   private final ElevatorFeedforward feedForward = new ElevatorFeedforward(Config.Feedforward.kS.in(Config.kVoltageUnit),
       Config.Feedforward.kG.in(
           Config.kVoltageUnit),
       Config.Feedforward.kV);
+
   private final ProfiledPIDController controller = new ProfiledPIDController(
       Config.PID.kP.in(Config.kVoltageUnit.per(Config.kDistanceUnit)),
       Config.PID.kI,
@@ -168,7 +169,8 @@ public class Elevator extends SubsystemBase {
         Config.kDistanceUnit),
         Config.PID.kVelocityTolerance.in(Config.kLinearVelocityUnit));
     controller.setIZone(Config.PID.kIZone.in(Config.kDistanceUnit));
-    controller.setIntegratorRange(-Config.PID.kIntegratorRange, Config.PID.kIntegratorRange);
+    controller.setIntegratorRange(-Config.PID.kIntegratorRange.in(Config.kVoltageUnit), Config.PID.kIntegratorRange
+        .in(Config.kVoltageUnit));
   }
 
   @Override
@@ -177,7 +179,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void move(Voltage output) {
-    // move the motors the right direction with + being up and - being down
     leaderMotor.setVoltage(output);
   }
 
