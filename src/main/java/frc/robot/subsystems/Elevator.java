@@ -79,7 +79,6 @@ final class Config {
 
   public static final class PID {
     // Coefficients
-    // TODO: Convert to unit type
     // Unit is volts / inch
     public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0);
     // TODO: Convert to unit type
@@ -106,7 +105,11 @@ final class Config {
    * elevator? end of the outtake?]
    */
   public static final class Positions {
-    public static final Distance kStartPosition = Inches.of(0);
+    public static final Distance kL2 = Feet.of(2).plus(Inches.of(7.875));
+    public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
+    public static final Distance kL4 = Feet.of(6);
+
+    public static final Distance kStartPosition = kL2;
     public static final Distance kMinPosition = Inches.of(0);
     public static final Distance kMaxPosition = Inches.of(50);
   }
@@ -135,12 +138,14 @@ public class Elevator extends SubsystemBase {
           Config.kVoltageUnit),
       Config.Feedforward.kV);
 
+  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
+      Config.Constraints.kVelocity.in(Config.kLinearVelocityUnit),
+      Config.Constraints.kAcceleration.in(Config.kLinearAccelerationUnit));
   private final ProfiledPIDController controller = new ProfiledPIDController(
       Config.PID.kP.in(Config.kVoltageUnit.per(Config.kDistanceUnit)),
       Config.PID.kI,
       Config.PID.kD,
-      new TrapezoidProfile.Constraints(Config.Constraints.kVelocity.in(Config.kLinearVelocityUnit),
-          Config.Constraints.kAcceleration.in(Config.kLinearAccelerationUnit)));
+      constraints);
   // #endregion
 
   public Elevator() {
@@ -175,7 +180,25 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    final double pidVoltage = controller.calculate(getPosition().in(Config.kDistanceUnit));
+    final double feedForwardVoltage = feedForward.calculate(controller.getSetpoint().velocity);
+    this.move(Config.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+  }
 
+  public Distance getPosition() {
+    return Config.kDistanceUnit.of(encoder.getPosition());
+  }
+
+  public LinearVelocity getVelocity() {
+    return Config.kLinearVelocityUnit.of(encoder.getVelocity());
+  }
+
+  public void setGoal(Distance position) {
+    controller.setGoal(position.in(Config.kDistanceUnit));
+  }
+
+  public boolean atGoal() {
+    return controller.atGoal();
   }
 
   public void move(Voltage output) {
