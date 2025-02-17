@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +18,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outake;
+import frc.robot.subsystems.YagslDrive;
 import frc.robot.subsystems.AlgaePickup;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +33,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 	// The robot's subsystems
-	private final Drive robotDrive = new Drive();
+	// private final Drive robotDrive = new Drive();
+	File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
+	private final YagslDrive yagslDrive = new YagslDrive(swerveJsonDirectory);
 	private final Climber climber = new Climber();
 	private final Elevator elevator = new Elevator();
 	private final Intake intake = new Intake();
@@ -47,7 +53,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		robotDrive.zeroHeading();
+		// robotDrive.zeroHeading();
 
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
 		SmartDashboard.putData(m_autonomousChooser);
@@ -56,7 +62,9 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// Configure default commands
-		robotDrive.setDefaultCommand(robotDrive.driveTeleop(driverController));
+		// robotDrive.setDefaultCommand(robotDrive.driveTeleop(driverController));
+		yagslDrive.setDefaultCommand(yagslDrive.driveCommand(driverController::getLeftX,
+				driverController::getLeftY, driverController::getRightX, driverController::getRightY));
 		elevator.setDefaultCommand(new RunCommand(elevator::stop, elevator));
 	}
 
@@ -74,11 +82,11 @@ public class RobotContainer {
 
 		operatorsStick.button(1).whileTrue(new RunCommand(elevator::moveUp, elevator));
 		operatorsStick.button(2).whileTrue(new RunCommand(elevator::moveDown, elevator));
-		driverController.a().onTrue(robotDrive.resetGyro());
-		driverController.leftTrigger().onTrue(robotDrive.setSlowModeCommand(true))
-				.onFalse(robotDrive.setSlowModeCommand(false));
-		driverController.rightBumper().onTrue(robotDrive.setFieldRelativeCommand(false))
-				.onFalse(robotDrive.setFieldRelativeCommand(true));
+		// driverController.a().onTrue(robotDrive.resetGyro());
+		// driverController.leftTrigger().onTrue(robotDrive.setSlowModeCommand(true))
+		// .onFalse(robotDrive.setSlowModeCommand(false));
+		// driverController.rightBumper().onTrue(robotDrive.setFieldRelativeCommand(false))
+		// .onFalse(robotDrive.setFieldRelativeCommand(true));
 	}
 
 	/**
