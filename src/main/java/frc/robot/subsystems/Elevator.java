@@ -1,5 +1,4 @@
 
-
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -26,6 +25,7 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 final class Config {
@@ -45,22 +45,20 @@ final class Config {
 
   public static final class Encoder {
     public static final boolean kInverted = false;
-    private static final Distance distancePerSprocketRotation = Inches.of(5.5);
-    private static final double gearboxRatio = 0.1;
-    public static final Distance kPositionConversion = distancePerSprocketRotation.times(gearboxRatio);
-    public static final LinearVelocity kVelocityConversion = kPositionConversion.div(Seconds.of(60));
+    public static final Distance kPositionConversion = Inches.of(1.077);
+    public static final LinearVelocity kVelocityConversion = InchesPerSecond.of(0.018);
   }
 
   public static final class Feedforward {
-    public static final Voltage kS = Volts.of(0.16);
-    public static final Voltage kG = Volts.of(0.65);
-    public static final double kV = 0.35;
+    public static final Voltage kS = Volts.of(0.12);
+    public static final Voltage kG = Volts.of(0.3);
+    public static final double kV = 0.117;
   }
 
   public static final class PID {
     // Coefficients
     // Unit is volts / inch
-    public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0);
+    public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0.133);
     // TODO: Convert to unit type
     // Unit is volts / (inch * second)
     public static final double kI = 0;
@@ -76,8 +74,8 @@ final class Config {
   }
 
   public static final class Constraints {
-    public static final LinearVelocity kVelocity = InchesPerSecond.of(0);
-    public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(0);
+    public static final LinearVelocity kVelocity = InchesPerSecond.of(48);
+    public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(122);
   }
 
   /**
@@ -89,9 +87,9 @@ final class Config {
     public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
     public static final Distance kL4 = Feet.of(6);
 
-    public static final Distance kStartPosition = kL2;
-    public static final Distance kMinPosition = Inches.of(0);
-    public static final Distance kMaxPosition = Inches.of(50);
+    public static final Distance kMinPosition = Inches.of(25.625);
+    public static final Distance kMaxPosition = Inches.of(71.5);
+    public static final Distance kStartPosition = kMinPosition;
   }
 
   public static final class Outputs {
@@ -106,7 +104,7 @@ final class Config {
 }
 
 public class Elevator extends SubsystemBase {
- 
+
   private final SparkMax leaderMotor = new SparkMax(Config.LeaderMotor.kCanId,
       Config.LeaderMotor.kMotorType);
   private final SparkMax followerMotor = new SparkMax(Config.FollowerMotor.kCanId,
@@ -137,7 +135,6 @@ public class Elevator extends SubsystemBase {
         .idleMode(Config.LeaderMotor.kIdleMode);
 
     leaderMotorConfig.encoder
-        //.inverted(Config.Encoder.kInverted) // commented out 19FEB25 to prevent a boot loop as invertion and counts per rev cannot be set explicitly on brushless motors, idk why but that was the error Kyle Magness 19FEB25
         .positionConversionFactor(Config.Encoder.kPositionConversion.in(Config.kDistanceUnit))
         .velocityConversionFactor(Config.Encoder.kVelocityConversion.in(Config.kLinearVelocityUnit));
 
@@ -160,9 +157,6 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    final double pidVoltage = controller.calculate(getPosition().in(Config.kDistanceUnit));
-    final double feedForwardVoltage = feedForward.calculate(controller.getSetpoint().velocity);
-    this.move(Config.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
   }
 
   public Distance getPosition() {
@@ -179,6 +173,19 @@ public class Elevator extends SubsystemBase {
 
   public boolean atGoal() {
     return controller.atGoal();
+  }
+
+  private void usePID() {
+    final double pidVoltage = controller.calculate(getPosition().in(Config.kDistanceUnit));
+    final double feedForwardVoltage = feedForward.calculate(controller.getSetpoint().velocity);
+    this.move(Config.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+  }
+
+  public Command moveToPosition(Distance position) {
+    return startRun(() -> {
+      setGoal(position);
+    }, this::usePID).until(this::atGoal);
+
   }
 
   public void move(Voltage output) {
