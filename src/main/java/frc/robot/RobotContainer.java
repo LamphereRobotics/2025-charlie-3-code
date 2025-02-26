@@ -73,7 +73,9 @@ public class RobotContainer {
 
 		m_operatorsStick.button(1).whileTrue(new RunCommand(m_elevator::moveUp, m_elevator));
 		m_operatorsStick.button(2).whileTrue(new RunCommand(m_elevator::moveDown, m_elevator));
-		m_driverController.a().onTrue(m_robotDrive.resetGyro());
+		m_operatorsStick.button(9).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kL2));
+		m_operatorsStick.button(7).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kL3));
+		m_operatorsStick.button(10).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 				.onFalse(m_robotDrive.setSlowModeCommand(false));
 		m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))

@@ -4,7 +4,10 @@
 
 package frc.robot;
 
-import java.security.PublicKey;
+import static edu.wpi.first.units.Units.*;
+
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -13,6 +16,16 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearAccelerationUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.TimeUnit;
+import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
@@ -121,9 +134,82 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants {
-    public static final int kElevatorEins = 9;
-    public static final int kElevatorZwei = 10;
+  public static final class LeaderMotor {
+    public static final int kCanId = 9;
+    public static final boolean kInverted = false;
+    public static final IdleMode kIdleMode = IdleMode.kBrake;
+    public static final MotorType kMotorType = MotorType.kBrushless;
   }
+
+  public static final class FollowerMotor {
+    public static final int kCanId = 10;
+    public static final boolean kInverted = true;
+    public static final IdleMode kIdleMode = IdleMode.kBrake;
+    public static final MotorType kMotorType = MotorType.kBrushless;
+  }
+
+  public static final class Encoder {
+    public static final boolean kInverted = false;
+    public static final Distance kPositionConversion = Inches.of(1.077);
+    public static final LinearVelocity kVelocityConversion = InchesPerSecond.of(0.018);
+  }
+
+  public static final class Feedforward {
+    public static final Voltage kS = Volts.of(0.12);
+    public static final Voltage kG = Volts.of(0.3);
+    public static final double kV = 0.117;
+  }
+
+  public static final class PID {
+    // Coefficients
+    // Unit is volts / inch
+    public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0.3);
+    // TODO: Convert to unit type
+    // Unit is volts / (inch * second)
+    public static final double kI = 0;
+    // TODO: Convert to unit type
+    // Unit is volts / inch / second
+    public static final double kD = 0.03;
+
+    // Extra config
+    public static final Distance kPositionTolerance = Inches.of(0);
+    public static final LinearVelocity kVelocityTolerance = InchesPerSecond.of(0);
+    public static final Distance kIZone = Inches.of(0);
+    public static final Voltage kIntegratorRange = Volts.of(0);
+  }
+
+  public static final class Constraints {
+    public static final LinearVelocity kVelocity = InchesPerSecond.of(48);
+    public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(122);
+  }
+
+  /**
+   * All positions will be distances from the ground to the [center of the
+   * elevator? end of the outtake?]
+   */
+  public static final class Positions {
+    public static final Distance kL2 = Feet.of(2).plus(Inches.of(7.875));
+    public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
+    public static final Distance kL4 = Feet.of(6);
+
+    public static final Distance kMinPosition = Inches.of(25.625);
+    public static final Distance kMaxPosition = Inches.of(69);
+    public static final Distance kStartPosition = kMinPosition;
+
+    public static final boolean kForwardSoftLimitEnabled = true;
+    public static final boolean kReverseSoftLimitEnabled = true;
+  }
+
+  public static final class Outputs {
+    public static final Voltage kVoltage = Volts.of(2);
+  }
+
+  public static final TimeUnit kTimeUnit = Seconds;
+  public static final VoltageUnit kVoltageUnit = Volts;
+  public static final DistanceUnit kDistanceUnit = Inches;
+  public static final LinearVelocityUnit kLinearVelocityUnit = kDistanceUnit.per(kTimeUnit);
+  public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
+}
 
   public static final class ClimberConstants {
     public static final int kClimbyUno = 0;
