@@ -4,13 +4,19 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -19,6 +25,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers;
+
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -52,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroPort);
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       m_gyro.getRotation2d(),
       new SwerveModulePosition[] {
@@ -60,19 +74,57 @@ public class DriveSubsystem extends SubsystemBase {
           m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      });
+      }
+      ,Pose2d.kZero);
+
 
   private boolean m_slowMode = false;
   private boolean m_fieldRelative = true;
+  private Pose2d m_prevPose = m_poseEstimator.getEstimatedPosition();
+  private Translation2d m_velocity = Translation2d.kZero;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    RobotConfig config = new RobotConfig(1, 1, null);
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
+
+    
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
+    m_poseEstimator.update(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -80,7 +132,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-
+    useMegaTag2VisionEstimate();
+    
+    m_velocity = m_poseEstimator.getEstimatedPosition().getTranslation().minus(m_prevPose.getTranslation()).div(0.02);
+    m_prevPose = m_poseEstimator.getEstimatedPosition();
+  
     m_frontLeft.logStateToDashboard("drive-front-left");
     m_frontRight.logStateToDashboard("drive-front-right");
     m_rearLeft.logStateToDashboard("drive-rear-left");
@@ -89,8 +145,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("drive-is-slow", m_slowMode);
     SmartDashboard.putBoolean("drive-is-field-relative",
         m_fieldRelative);
-	SmartDashboard.putNumber("drive-pose-x", getPose().getX());
-	SmartDashboard.putNumber("drive-pose-y", getPose().getY());
+	  SmartDashboard.putNumber("drive-pose-x", getPose().getX());
+	  SmartDashboard.putNumber("drive-pose-y", getPose().getY());
   }
 
   /**
@@ -99,7 +155,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -108,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
+    m_poseEstimator.resetPosition(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -235,9 +291,42 @@ public class DriveSubsystem extends SubsystemBase {
   public Command setFieldRelativeCommand(boolean fieldRelative) {
     return new InstantCommand(() -> m_fieldRelative = fieldRelative);
   }
-
+  
   private static double WithDeadband(double deadband, double thumbstick) {
     return Math.abs(thumbstick) < deadband ? 0
         : ((Math.abs(thumbstick) - deadband) / (1 - deadband) * Math.signum(thumbstick));
   }
+
+  private ChassisSpeeds getRobotRelativeSpeeds(){
+    var speeds = new ChassisSpeeds(m_velocity.getX(), m_velocity.getY(), getTurnRate().in(RadiansPerSecond));
+    return speeds; 
+  }
+  
+  private void driveRobotRelative(ChassisSpeeds speed){
+
+  }
+
+  private void useMegaTag2VisionEstimate() {
+    boolean doRejectUpdate = false;
+
+    LimelightHelpers.SetRobotOrientation(LimelightConstants.kLimelightName,
+        m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
+        .getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.kLimelightName);
+    if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                          // vision updates
+    {
+      doRejectUpdate = true;
+    }
+    if (mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+    if (!doRejectUpdate) {
+      m_poseEstimator.setVisionMeasurementStdDevs(LimelightConstants.kMegaTag2VisionMeasurementStdDevs);
+      m_poseEstimator.addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds);
+    }
+  }
+
 }
