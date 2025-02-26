@@ -4,21 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutoCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Outake;
 import frc.robot.subsystems.AlgeePickupSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
@@ -31,10 +31,9 @@ public class RobotContainer {
 	// The robot's subsystems
 	private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
-	private final Elevator m_Elevator = new Elevator();
-	private final Intake m_Intake = new Intake();
-	private final Outake m_Outake = new Outake();
-	private final AlgeePickupSubsystem m_AlgeePickupSubsystem = new AlgeePickupSubsystem();
+	private final Elevator m_elevator = new Elevator();
+	private final Intake m_intake = new Intake();
+	private final AlgeePickupSubsystem m_algeePickupSubsystem = new AlgeePickupSubsystem();
 
 	// The driver's controller
 	private final CommandXboxController m_driverController = new CommandXboxController(
@@ -57,6 +56,8 @@ public class RobotContainer {
 
 		// Configure default commands
 		m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
+		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
+		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
 	}
 
 	/**
@@ -69,10 +70,21 @@ public class RobotContainer {
 	 * {@link JoystickButton}.
 	 */
 
-	private void configureButtonBindings() {
-		
+	private Command scoreCoralAndReturn(Distance position) {
+		return m_elevator.moveToPosition(position)
+				.andThen(m_intake.out().raceWith(m_elevator.holdPosition()))
+				.andThen(new InstantCommand(m_intake::stop, m_intake))
+				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
+	}
 
-		m_driverController.a().onTrue(m_robotDrive.resetGyro());
+	private void configureButtonBindings() {
+		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
+		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
+		// m_operatorsStick.button(8)
+		// .whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		m_operatorsStick.button(10)
+				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
+						.andThen(m_intake.in()));
 		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 				.onFalse(m_robotDrive.setSlowModeCommand(false));
 		m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
