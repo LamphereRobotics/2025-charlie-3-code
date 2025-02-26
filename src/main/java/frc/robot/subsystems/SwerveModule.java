@@ -83,8 +83,7 @@ public class SwerveModule {
 
 		m_turningEncoder = new CANcoder(turningEncoderChannel);
 
-		m_driveEncoder = m_driveMotor.getEncoder();																																																																																																																																																																																																																																																																																									
-		
+		m_driveEncoder = m_driveMotor.getEncoder();	
 		m_drivePIDController.setTolerance(Constants.ModuleConstants.kToleranceModuleDriveController);
 
 		// Limit the PID Controller's input range between -pi and pi and set the input
