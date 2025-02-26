@@ -172,8 +172,8 @@ public final class Constants {
     public static final double kD = 0.03;
 
     // Extra config
-    public static final Distance kPositionTolerance = Inches.of(0);
-    public static final LinearVelocity kVelocityTolerance = InchesPerSecond.of(0);
+    public static final Distance kPositionTolerance = Inches.of(1);
+    public static final LinearVelocity kVelocityTolerance = InchesPerSecond.of(0.25);
     public static final Distance kIZone = Inches.of(0);
     public static final Voltage kIntegratorRange = Volts.of(0);
   }
@@ -181,6 +181,7 @@ public final class Constants {
   public static final class Constraints {
     public static final LinearVelocity kVelocity = InchesPerSecond.of(48);
     public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(122);
+    public static final double kRampRate = 0.25;
   }
 
   /**
@@ -193,7 +194,7 @@ public final class Constants {
     public static final Distance kL4 = Feet.of(6);
 
     public static final Distance kMinPosition = Inches.of(25.625);
-    public static final Distance kMaxPosition = Inches.of(69);
+    public static final Distance kMaxPosition = Inches.of(71);
     public static final Distance kStartPosition = kMinPosition;
 
     public static final boolean kForwardSoftLimitEnabled = true;

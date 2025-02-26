@@ -4,13 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutoCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -57,6 +57,7 @@ public class RobotContainer {
 		// Configure default commands
 		m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
+		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
 	}
 
 	/**
@@ -69,14 +70,21 @@ public class RobotContainer {
 	 * {@link JoystickButton}.
 	 */
 
-	private void configureButtonBindings() {
+	private Command scoreCoralAndReturn(Distance position) {
+		return m_elevator.moveToPosition(position)
+				.andThen(m_intake.out().raceWith(m_elevator.holdPosition()))
+				.andThen(new InstantCommand(m_intake::stop, m_intake))
+				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
+	}
 
-		m_operatorsStick.button(1).whileTrue(new RunCommand(m_elevator::moveUp, m_elevator));
-		m_operatorsStick.button(2).whileTrue(new RunCommand(m_elevator::moveDown, m_elevator));
-		m_operatorsStick.button(9).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kL2));
-		m_operatorsStick.button(7).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kL3));
-		m_operatorsStick.button(10).whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
-		
+	private void configureButtonBindings() {
+		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
+		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
+		// m_operatorsStick.button(8)
+		// .whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		m_operatorsStick.button(10)
+				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
+						.andThen(m_intake.in()));
 		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 				.onFalse(m_robotDrive.setSlowModeCommand(false));
 		m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))

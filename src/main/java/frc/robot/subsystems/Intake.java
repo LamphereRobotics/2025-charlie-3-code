@@ -8,8 +8,8 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -26,20 +26,25 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Sensor", IntakeSensor.get());
   }
 
-  public void in() {
-    if (!IntakeSensor.get()) {
-      m_spitMotor.set(0.15);
-    } else {
-      stop();
-    }
+  public boolean hasCoral() {
+    return IntakeSensor.get();
   }
 
-  public void out() {
-    m_spitMotor.set(0.15);
+  public Command in() {
+    return run(() -> {
+      m_spitMotor.setVoltage(2);
+    }).until(this::hasCoral);
+  }
+
+  public Command out() {
+    return run(() -> {
+      m_spitMotor.setVoltage(12);
+    }).until(() -> {
+      return !this.hasCoral();
+    });
   }
 
   public void stop() {
-    // call move with a - value
     m_spitMotor.set(0);
   }
 

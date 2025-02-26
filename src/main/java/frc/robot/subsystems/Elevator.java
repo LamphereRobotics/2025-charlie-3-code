@@ -48,7 +48,8 @@ public class Elevator extends SubsystemBase {
 
     leaderMotorConfig
         .inverted(ElevatorConstants.LeaderMotor.kInverted)
-        .idleMode(ElevatorConstants.LeaderMotor.kIdleMode);
+        .idleMode(ElevatorConstants.LeaderMotor.kIdleMode)
+        .openLoopRampRate(ElevatorConstants.Constraints.kRampRate);
 
     leaderMotorConfig.encoder
         .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(ElevatorConstants.kDistanceUnit))
@@ -60,27 +61,29 @@ public class Elevator extends SubsystemBase {
         .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(ElevatorConstants.kDistanceUnit))
         .reverseSoftLimitEnabled(ElevatorConstants.Positions.kReverseSoftLimitEnabled)
         .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(ElevatorConstants.kDistanceUnit));
-        
-        followerMotorConfig
+
+    followerMotorConfig
         .inverted(ElevatorConstants.FollowerMotor.kInverted)
         .follow(leaderMotor, ElevatorConstants.FollowerMotor.kInverted)
-        .idleMode(ElevatorConstants.FollowerMotor.kIdleMode);
-       
-        followerMotorConfig.encoder
-            .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(ElevatorConstants.kDistanceUnit))
-            .velocityConversionFactor(
-                ElevatorConstants.Encoder.kVelocityConversion.in(ElevatorConstants.kLinearVelocityUnit));
-    
-        followerMotorConfig.softLimit
-            .forwardSoftLimitEnabled(ElevatorConstants.Positions.kForwardSoftLimitEnabled)
-            .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(ElevatorConstants.kDistanceUnit))
-            .reverseSoftLimitEnabled(ElevatorConstants.Positions.kReverseSoftLimitEnabled)
-            .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(ElevatorConstants.kDistanceUnit));
-        
-        leaderMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        followerMotor.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-    followerMotor.getEncoder().setPosition(ElevatorConstants.Positions.kStartPosition.in(ElevatorConstants.kDistanceUnit));
+        .idleMode(ElevatorConstants.FollowerMotor.kIdleMode)
+        .openLoopRampRate(ElevatorConstants.Constraints.kRampRate);
+
+    followerMotorConfig.encoder
+        .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(ElevatorConstants.kDistanceUnit))
+        .velocityConversionFactor(
+            ElevatorConstants.Encoder.kVelocityConversion.in(ElevatorConstants.kLinearVelocityUnit));
+
+    followerMotorConfig.softLimit
+        .forwardSoftLimitEnabled(ElevatorConstants.Positions.kForwardSoftLimitEnabled)
+        .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(ElevatorConstants.kDistanceUnit))
+        .reverseSoftLimitEnabled(ElevatorConstants.Positions.kReverseSoftLimitEnabled)
+        .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(ElevatorConstants.kDistanceUnit));
+
+    leaderMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    followerMotor.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    followerMotor.getEncoder()
+        .setPosition(ElevatorConstants.Positions.kStartPosition.in(ElevatorConstants.kDistanceUnit));
     encoder.setPosition(ElevatorConstants.Positions.kStartPosition.in(ElevatorConstants.kDistanceUnit));
 
     controller.setTolerance(ElevatorConstants.PID.kPositionTolerance.in(
@@ -122,6 +125,10 @@ public class Elevator extends SubsystemBase {
     this.move(ElevatorConstants.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
   }
 
+  public Command holdPosition() {
+    return run(this::usePID);
+  }
+
   public Command moveToPosition(Distance position) {
     return startRun(() -> {
       setGoal(position);
@@ -131,14 +138,6 @@ public class Elevator extends SubsystemBase {
 
   public void move(Voltage output) {
     leaderMotor.setVoltage(output);
-  }
-
-  public void moveUp() {
-    move(ElevatorConstants.Outputs.kVoltage);
-  }
-
-  public void moveDown() {
-    move(ElevatorConstants.Outputs.kVoltage.times(-1));
   }
 
   public void stop() {
