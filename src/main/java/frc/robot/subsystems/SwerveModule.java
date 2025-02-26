@@ -72,6 +72,7 @@ public class SwerveModule {
 
 		driveMotorConfig_.idleMode(SparkBaseConfig.IdleMode.kBrake);
 		driveMotorConfig_.smartCurrentLimit(ModuleConstants.kMaxDriveCurrent);
+		driveMotorConfig_.inverted(true);
 		driveMotorConfig_.encoder.positionConversionFactor(Constants.DriveConstants.kDriveScale);
 		driveMotorConfig_.encoder.velocityConversionFactor(Constants.DriveConstants.kDriveScale / 60);
 		turnMotorConfig_.idleMode(SparkBaseConfig.IdleMode.kBrake);
