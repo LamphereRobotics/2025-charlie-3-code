@@ -7,6 +7,9 @@ package frc.robot;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -36,7 +39,7 @@ public class RobotContainer {
 	// The robot's subsystems
 	// private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 	private final YagslDrive m_yagslDrive = new YagslDrive(new File(Filesystem.getDeployDirectory(),
-			"swerve"));
+			"swerve"), Pose2d.kZero);
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
 	private final Elevator m_elevator = new Elevator();
 	private final Intake m_intake = new Intake();

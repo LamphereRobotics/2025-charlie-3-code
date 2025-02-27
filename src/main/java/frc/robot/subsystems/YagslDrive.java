@@ -64,19 +64,18 @@ public class YagslDrive extends SubsystemBase {
   private final boolean visionDriveTest = false;
 
   /**
-   * Initialize {@link SwerveDrive} with the directory provided.
+   * Initialize {@link SwerveDrive} with the directory and initial pose provided.
    *
-   * @param directory Directory of swerve drive config files.
+   * @param directory   Directory of swerve drive config files.
+   * @param initialPose The pose the robot is in on startup.
    */
-  public YagslDrive(File directory) {
+  public YagslDrive(File directory, Pose2d initialPose) {
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.DriveConstants.kMaxSpeedMetersPerSecond,
-          new Pose2d(new Translation2d(Meter.of(1),
-              Meter.of(4)),
-              Rotation2d.fromDegrees(0)));
+          initialPose);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -420,8 +419,7 @@ public class YagslDrive extends SubsystemBase {
    */
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
       DoubleSupplier headingY) {
-    swerveDrive.setHeadingCorrection(true); // Normally you would want heading
-    // correction for this kind of control.
+    swerveDrive.setHeadingCorrection(true);
     return run(() -> {
 
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
