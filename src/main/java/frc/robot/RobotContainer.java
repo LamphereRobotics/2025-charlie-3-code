@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.io.File;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -62,8 +63,17 @@ public class RobotContainer {
 
 		// Configure default commands
 		// m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
-		m_yagslDrive.setDefaultCommand(m_yagslDrive.driveCommand(() -> m_driverController.getLeftY() * -1,
-				() -> m_driverController.getLeftX() * -1, () -> m_driverController.getRightX() * -1));
+		Command driveFieldOrientedDirectAngle = m_yagslDrive.driveCommand(
+				() -> MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> m_driverController.getRightX(),
+				() -> m_driverController.getRightY());
+		Command driveFieldOriented = m_yagslDrive.driveCommand(
+				() -> MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDeadband));
+
+		m_yagslDrive.setDefaultCommand(driveFieldOriented);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
 	}
@@ -93,6 +103,7 @@ public class RobotContainer {
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
 						.andThen(m_intake.in()));
+		m_driverController.a().onTrue(new InstantCommand(m_yagslDrive::zeroGyro));
 		// m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
 		// m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
