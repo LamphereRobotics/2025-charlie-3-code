@@ -139,13 +139,6 @@ public final class Constants {
     public static final double kDeadband = 0.15;
   }
 
-  public static final class ShooterConstants {
-    public static final int kKicky = 9;
-    public static final int kKickyLimitSwitch = 6;
-    public static final int kShootNSuckUno = 12;
-    public static final int kShootNSuckDos = 13;
-  }
-
   public static final class ElevatorConstants {
     public static final class LeaderMotor {
       public static final int kCanId = 9;
