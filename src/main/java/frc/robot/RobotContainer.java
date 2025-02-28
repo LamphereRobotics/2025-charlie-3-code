@@ -67,16 +67,16 @@ public class RobotContainer {
 		// Configure default commands
 		// m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
 		Command driveFieldOrientedDirectAngle = m_yagslDrive.driveCommand(
-				() -> MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
-				() -> MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
-				() -> m_driverController.getRightX(),
-				() -> m_driverController.getRightY());
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> -m_driverController.getRightX(),
+				() -> -m_driverController.getRightY());
 		Command driveFieldOriented = m_yagslDrive.driveCommand(
-				() -> MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
-				() -> MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
-				() -> MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDeadband));
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDeadband));
 
-		m_yagslDrive.setDefaultCommand(driveFieldOriented);
+		m_yagslDrive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
 	}
@@ -102,7 +102,7 @@ public class RobotContainer {
 		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
 		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(8)
-		// .whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		// 		.whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
 						.andThen(m_intake.in()));
