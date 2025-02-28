@@ -22,7 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.YagslDrive;
 import frc.robot.subsystems.AlgaeArm;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,7 +44,7 @@ public class RobotContainer {
 			"swerve"), Pose2d.kZero);
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
 	private final Elevator m_elevator = new Elevator();
-	private final Intake m_intake = new Intake();
+	private final CoralIntake m_coralIntake = new CoralIntake();
 	private final AlgaeArm m_algaeArm = new AlgaeArm();
 	private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
 
@@ -81,7 +81,7 @@ public class RobotContainer {
 
 		m_yagslDrive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
-		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
+		m_coralIntake.setDefaultCommand(new RunCommand(m_coralIntake::stop, m_coralIntake));
 		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
 			double output = -MathUtil.applyDeadband(m_operatorsStick.getRawAxis(1), 0.25) * 4;
 			m_algaeArm.move(Volts.of(output));
@@ -104,8 +104,8 @@ public class RobotContainer {
 
 	private Command scoreCoralAndReturn(Distance position) {
 		return m_elevator.moveToPosition(position)
-				.andThen(m_intake.score().raceWith(m_elevator.holdPosition()))
-				.andThen(new InstantCommand(m_intake::stop, m_intake))
+				.andThen(m_coralIntake.score().raceWith(m_elevator.holdPosition()))
+				.andThen(new InstantCommand(m_coralIntake::stop, m_coralIntake))
 				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 	}
 
@@ -114,14 +114,14 @@ public class RobotContainer {
 			m_elevator.move(Constants.ElevatorConstants.Outputs.kUp);
 		}, m_elevator).alongWith(new RunCommand(() -> {
 			if (m_elevator.getPosition().gte(Constants.ElevatorConstants.Positions.kL4Launch)) {
-				m_intake.out();
+				m_coralIntake.out();
 			} else {
-				m_intake.stop();
+				m_coralIntake.stop();
 			}
-		}, m_intake))
-				.until(() -> !m_intake.hasCoral()
+		}, m_coralIntake))
+				.until(() -> !m_coralIntake.hasCoral()
 						&& m_elevator.getPosition().gte(Constants.ElevatorConstants.Positions.kMaxPosition))
-				.andThen(new InstantCommand(m_intake::stop, m_intake))
+				.andThen(new InstantCommand(m_coralIntake::stop, m_coralIntake))
 				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 	}
 
@@ -132,7 +132,7 @@ public class RobotContainer {
 		// .whileTrue(launchL4());
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
-						.andThen(m_intake.intake()));
+						.andThen(m_coralIntake.intake()));
 		m_operatorsStick.button(1).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(4).whileTrue(m_algaeIntake.inCommand());
 		// m_operatorsStick.button(5).whileTrue(new RunCommand(() ->

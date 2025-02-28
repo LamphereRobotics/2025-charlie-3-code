@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CoralIntakeConstants;
 
-public class Intake extends SubsystemBase {
+public class CoralIntake extends SubsystemBase {
   private final SparkMax motor = new SparkMax(CoralIntakeConstants.Motor.kCanId,
       CoralIntakeConstants.Motor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(CoralIntakeConstants.LimitSwitch.kPort);
 
-  public Intake() {
+  public CoralIntake() {
   }
 
   @Override
@@ -31,14 +31,16 @@ public class Intake extends SubsystemBase {
     return limitSwitch.get();
   }
 
+  public boolean noCoral() {
+    return !hasCoral();
+  }
+
   public Command intake() {
     return run(this::in).until(this::hasCoral);
   }
 
   public Command score() {
-    return run(this::out).until(() -> {
-      return !this.hasCoral();
-    });
+    return run(this::out).until(this::noCoral);
   }
 
   public void in() {
