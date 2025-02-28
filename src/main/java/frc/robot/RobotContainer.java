@@ -8,8 +8,6 @@ import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -19,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralIntake;
@@ -42,7 +39,6 @@ public class RobotContainer {
 	// private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 	private final YagslDrive m_yagslDrive = new YagslDrive(new File(Filesystem.getDeployDirectory(),
 			"swerve"), Pose2d.kZero);
-	private final ClimberSubsystem m_climber = new ClimberSubsystem();
 	private final Elevator m_elevator = new Elevator();
 	private final CoralIntake m_coralIntake = new CoralIntake();
 	private final AlgaeArm m_algaeArm = new AlgaeArm();
