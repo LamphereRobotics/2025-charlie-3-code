@@ -1,13 +1,12 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ElevatorConstants;
-
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,9 +16,9 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
-
   private final SparkMax leaderMotor = new SparkMax(ElevatorConstants.LeaderMotor.kCanId,
       ElevatorConstants.LeaderMotor.kMotorType);
   private final SparkMax followerMotor = new SparkMax(ElevatorConstants.FollowerMotor.kCanId,
@@ -133,7 +132,6 @@ public class Elevator extends SubsystemBase {
     return startRun(() -> {
       setGoal(position);
     }, this::usePID).until(this::atGoal);
-
   }
 
   public void move(Voltage output) {

@@ -31,18 +31,22 @@ public class Intake extends SubsystemBase {
     return limitSwitch.get();
   }
 
-  public Command in() {
-    return run(() -> {
-      this.output(CoralIntakeConstants.Outputs.kIn);
-    }).until(this::hasCoral);
+  public Command intake() {
+    return run(this::in).until(this::hasCoral);
   }
 
-  public Command out() {
-    return run(() -> {
-      this.output(CoralIntakeConstants.Outputs.kOut);
-    }).until(() -> {
+  public Command score() {
+    return run(this::out).until(() -> {
       return !this.hasCoral();
     });
+  }
+
+  public void in() {
+    this.output(CoralIntakeConstants.Outputs.kIn);
+  }
+
+  public void out() {
+    this.output(CoralIntakeConstants.Outputs.kOut);
   }
 
   public void output(Voltage output) {

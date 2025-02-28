@@ -93,7 +93,23 @@ public class RobotContainer {
 
 	private Command scoreCoralAndReturn(Distance position) {
 		return m_elevator.moveToPosition(position)
-				.andThen(m_intake.out().raceWith(m_elevator.holdPosition()))
+				.andThen(m_intake.score().raceWith(m_elevator.holdPosition()))
+				.andThen(new InstantCommand(m_intake::stop, m_intake))
+				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
+	}
+
+	private Command launchL4() {
+		return new RunCommand(() -> {
+			m_elevator.move(Constants.ElevatorConstants.Outputs.kUp);
+		}, m_elevator).alongWith(new RunCommand(() -> {
+			if (m_elevator.getPosition().gte(Constants.ElevatorConstants.Positions.kL4Launch)) {
+				m_intake.out();
+			} else {
+				m_intake.stop();
+			}
+		}, m_intake))
+				.until(() -> !m_intake.hasCoral()
+						&& m_elevator.getPosition().gte(Constants.ElevatorConstants.Positions.kMaxPosition))
 				.andThen(new InstantCommand(m_intake::stop, m_intake))
 				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 	}
@@ -101,11 +117,11 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
 		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
-		// m_operatorsStick.button(8)
-		// 		.whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		m_operatorsStick.button(8)
+				.whileTrue(launchL4());
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
-						.andThen(m_intake.in()));
+						.andThen(m_intake.intake()));
 		m_driverController.a().onTrue(new InstantCommand(m_yagslDrive::zeroGyro));
 		// m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
