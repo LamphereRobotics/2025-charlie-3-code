@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("CoralIntake/hasCoral", limitSwitch.get());
+    SmartDashboard.putBoolean("CoralIntake/hasCoral", hasCoral());
     SmartDashboard.putNumber("CoralIntake/outputVoltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
