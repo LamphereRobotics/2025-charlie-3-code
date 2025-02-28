@@ -246,7 +246,7 @@ public final class Constants {
     }
 
     public static final class LimitSwitch {
-      public static final int kPort = 1;
+      public static final int kPort = 9;
     }
 
     public static final class Feedforward {
@@ -287,12 +287,12 @@ public final class Constants {
       public static final Angle kMaxPosition = Degrees.of(90);
       public static final Angle kStartPosition = Degrees.of(110);
 
-      public static final boolean kForwardSoftLimitEnabled = true;
-      public static final boolean kReverseSoftLimitEnabled = true;
+      public static final boolean kForwardSoftLimitEnabled = false;
+      public static final boolean kReverseSoftLimitEnabled = false;
     }
 
     public static final class Outputs {
-      public static final Voltage kIntakeIn = Volts.of(2);
+      public static final Voltage kIntakeIn = Volts.of(-4);
       public static final Voltage kIntakeOut = Volts.of(12);
     }
   }

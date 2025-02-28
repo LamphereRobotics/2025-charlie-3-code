@@ -42,8 +42,6 @@ public class AlgaeIntake extends SubsystemBase {
   public Command outCommand() {
     return run(() -> {
       output(AlgaeConstants.Outputs.kIntakeOut);
-    }).until(() -> {
-      return !this.hasAlgae();
     });
   }
 
