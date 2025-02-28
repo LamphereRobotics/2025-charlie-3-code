@@ -79,7 +79,7 @@ public class RobotContainer {
 		m_coralIntake.setDefaultCommand(new RunCommand(m_coralIntake::stop, m_coralIntake));
 		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
 			double output = -MathUtil.applyDeadband(m_operatorsStick.getRawAxis(1), 0.25) * 4;
-			m_algaeArm.move(Volts.of(output));
+			m_algaeArm.setVoltage(Volts.of(output));
 			SmartDashboard.putNumber("Algae/Arm/input", m_operatorsStick.getRawAxis(1));
 			SmartDashboard.putNumber("Algae/Arm/output", output);
 

@@ -100,7 +100,7 @@ public class AlgaeArm extends SubsystemBase {
     final double pidVoltage = controller.calculate(getPosition().in(Units.kAngleUnit));
     final double feedForwardVoltage = feedForward.calculate(getPosition().in(Radians),
         controller.getSetpoint().velocity);
-    this.move(Units.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+    this.setVoltage(Units.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
   }
 
   public Command holdPosition() {
@@ -114,11 +114,11 @@ public class AlgaeArm extends SubsystemBase {
 
   }
 
-  public void move(Voltage output) {
+  public void setVoltage(Voltage output) {
     motor.setVoltage(output);
   }
 
   public void stop() {
-    move(Units.kVoltageUnit.zero());
+    setVoltage(Units.kVoltageUnit.zero());
   }
 }
