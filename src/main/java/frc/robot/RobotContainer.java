@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -23,11 +24,12 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.YagslDrive;
-import frc.robot.subsystems.AlgeePickupSubsystem;
+import frc.robot.subsystems.AlgaeArm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.AlgaeIntake;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,7 +45,8 @@ public class RobotContainer {
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
 	private final Elevator m_elevator = new Elevator();
 	private final Intake m_intake = new Intake();
-	private final AlgeePickupSubsystem m_algeePickupSubsystem = new AlgeePickupSubsystem();
+	private final AlgaeArm m_algaeArm = new AlgaeArm();
+	private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
 
 	// The driver's controller
 	private final CommandXboxController m_driverController = new CommandXboxController(
@@ -79,6 +82,14 @@ public class RobotContainer {
 		m_yagslDrive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
+		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
+			double output = -MathUtil.applyDeadband(m_operatorsStick.getRawAxis(1), 0.25) * 4;
+			m_algaeArm.move(Volts.of(output));
+			SmartDashboard.putNumber("Algae/Arm/input", m_operatorsStick.getRawAxis(1));
+			SmartDashboard.putNumber("Algae/Arm/output", output);
+
+		}, m_algaeArm));
+		m_algaeIntake.setDefaultCommand(new RunCommand(m_algaeIntake::stop, m_algaeIntake));
 	}
 
 	/**
@@ -102,10 +113,14 @@ public class RobotContainer {
 		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
 		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(8)
-		// 		.whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		// .whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
 						.andThen(m_intake.in()));
+		m_operatorsStick.button(1).whileTrue(m_algaeIntake.outCommand());
+		m_operatorsStick.button(4).whileTrue(m_algaeIntake.inCommand());
+		// m_operatorsStick.button(5).whileTrue(new RunCommand(() -> m_algaeArm.move(Volts.of(-1)), m_algaeArm));
+		// m_operatorsStick.button(6).whileTrue(new RunCommand(() -> m_algaeArm.move(Volts.of(1)), m_algaeArm));
 		m_driverController.a().onTrue(new InstantCommand(m_yagslDrive::zeroGyro));
 		// m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
