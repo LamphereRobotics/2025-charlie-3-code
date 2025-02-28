@@ -21,15 +21,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearAccelerationUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.TimeUnit;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Inch;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -40,6 +32,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -137,6 +130,29 @@ public final class Constants {
     public static final int kOperatorStickPort = 1;
 
     public static final double kDeadband = 0.15;
+
+    // Driver axes
+    public static final int kTranslationX = XboxController.Axis.kLeftY.value;
+    public static final int kTranslationY = XboxController.Axis.kLeftX.value;
+    public static final int kHeadingX = XboxController.Axis.kRightX.value;
+    public static final int kHeadingY = XboxController.Axis.kRightY.value;
+    public static final int kRotation = XboxController.Axis.kRightX.value;
+
+    // Driver buttons
+    public static final int kZeroGyro = XboxController.Button.kA.value;
+    public static final int kSlowMode = XboxController.Axis.kLeftTrigger.value;
+    public static final int kRobotRelative = XboxController.Button.kRightBumper.value;
+
+    // Operator axes
+    public static final int kMoveAlgaeArm = 1;
+
+    // Operator buttons
+    public static final int kIntakeCoral = 10;
+    public static final int kScoreL2 = 9;
+    public static final int kScoreL3 = 7;
+    public static final int kScoreL4 = 8;
+    public static final int kIntakeAlgae = 4;
+    public static final int kScoreAlgae = 1;
   }
 
   public static final class ElevatorConstants {
@@ -286,6 +302,7 @@ public final class Constants {
     }
 
     public static final class Outputs {
+      public static final Voltage kArmMax = Volts.of(4);
       public static final Voltage kIntakeIn = Volts.of(-4);
       public static final Voltage kIntakeOut = Volts.of(12);
     }
