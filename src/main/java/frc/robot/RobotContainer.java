@@ -109,7 +109,7 @@ public class RobotContainer {
 			m_elevator.move(Constants.ElevatorConstants.Outputs.kUp);
 		}, m_elevator).alongWith(new RunCommand(() -> {
 			if (m_elevator.getPosition().gte(Constants.ElevatorConstants.Positions.kL4Launch)) {
-				m_coralIntake.out();
+				m_coralIntake.outCommand();
 			} else {
 				m_coralIntake.stop();
 			}

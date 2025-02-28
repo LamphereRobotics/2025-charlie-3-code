@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.CoralIntakeConstants;
+import frc.robot.Constants.Units;
 
 public class CoralIntake extends SubsystemBase {
   private final SparkMax motor = new SparkMax(CoralIntakeConstants.Motor.kCanId,
@@ -36,27 +38,30 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return run(this::in).until(this::hasCoral);
+    return this.inCommand().until(this::hasCoral);
   }
 
   public Command score() {
-    return run(this::out).until(this::noCoral);
+    return this.outCommand().until(this::noCoral);
   }
 
-  public void in() {
-    this.output(CoralIntakeConstants.Outputs.kIn);
+  public Command inCommand() {
+    return this.setVoltageCommand(CoralIntakeConstants.Outputs.kIn);
   }
 
-  public void out() {
-    this.output(CoralIntakeConstants.Outputs.kOut);
+  public Command outCommand() {
+    return this.setVoltageCommand(CoralIntakeConstants.Outputs.kOut);
   }
 
-  public void output(Voltage output) {
-    motor.setVoltage(output);
+  public Command setVoltageCommand(Voltage output) {
+    return run(() -> this.setVoltage(output));
   }
 
   public void stop() {
-    motor.set(0);
+    this.setVoltage(Units.kVoltageUnit.zero());
   }
 
+  public void setVoltage(Voltage output) {
+    motor.setVoltage(output);
+  }
 }
