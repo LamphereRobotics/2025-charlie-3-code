@@ -69,6 +69,7 @@ public class RobotContainer {
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
 				() -> -m_driverController.getRightX(),
 				() -> -m_driverController.getRightY());
+		@SuppressWarnings("unused")
 		Command driveFieldOriented = m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
@@ -104,6 +105,7 @@ public class RobotContainer {
 				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 	}
 
+	@SuppressWarnings("unused")
 	private Command launchL4() {
 		return new RunCommand(() -> {
 			m_elevator.move(Constants.ElevatorConstants.Outputs.kUp);
