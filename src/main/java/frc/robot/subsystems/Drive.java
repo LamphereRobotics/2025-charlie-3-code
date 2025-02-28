@@ -53,7 +53,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class YagslDrive extends SubsystemBase {
+public class Drive extends SubsystemBase {
 
   /**
    * Swerve drive object.
@@ -70,7 +70,7 @@ public class YagslDrive extends SubsystemBase {
    * @param directory   Directory of swerve drive config files.
    * @param initialPose The pose the robot is in on startup.
    */
-  public YagslDrive(File directory, Pose2d initialPose) {
+  public Drive(File directory, Pose2d initialPose) {
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -86,8 +86,9 @@ public class YagslDrive extends SubsystemBase {
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
                                              // angle.
-    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
-                                            // simulations since it causes discrepancies not seen in real life.
+    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);// !SwerveDriveTelemetry.isSimulation); //
+                                                                         // Disables cosine compensation for
+    // simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,
         true,
         0.1); // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -113,7 +114,7 @@ public class YagslDrive extends SubsystemBase {
    * @param driveCfg      SwerveDriveConfiguration for the swerve.
    * @param controllerCfg Swerve Controller.
    */
-  public YagslDrive(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
+  public Drive(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
     swerveDrive = new SwerveDrive(driveCfg,
         controllerCfg,
         Constants.DriveConstants.kMaxSpeedMetersPerSecond,

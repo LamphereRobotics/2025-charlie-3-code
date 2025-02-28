@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.CoralIntake;
-import frc.robot.subsystems.YagslDrive;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.AlgaeArm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,7 +36,7 @@ import frc.robot.subsystems.AlgaeIntake;
 public class RobotContainer {
 	// The robot's subsystems
 	// private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-	private final YagslDrive m_yagslDrive = new YagslDrive(new File(Filesystem.getDeployDirectory(),
+	private final Drive m_drive = new Drive(new File(Filesystem.getDeployDirectory(),
 			"swerve"), Pose2d.kZero);
 	private final Elevator m_elevator = new Elevator();
 	private final CoralIntake m_coralIntake = new CoralIntake();
@@ -64,17 +64,17 @@ public class RobotContainer {
 
 		// Configure default commands
 		// m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
-		Command driveFieldOrientedDirectAngle = m_yagslDrive.driveCommand(
+		Command driveFieldOrientedDirectAngle = m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
 				() -> -m_driverController.getRightX(),
 				() -> -m_driverController.getRightY());
-		Command driveFieldOriented = m_yagslDrive.driveCommand(
+		Command driveFieldOriented = m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDeadband));
 
-		m_yagslDrive.setDefaultCommand(driveFieldOrientedDirectAngle);
+		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 		m_coralIntake.setDefaultCommand(new RunCommand(m_coralIntake::stop, m_coralIntake));
 		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
@@ -134,7 +134,7 @@ public class RobotContainer {
 		// m_algaeArm.move(Volts.of(-1)), m_algaeArm));
 		// m_operatorsStick.button(6).whileTrue(new RunCommand(() ->
 		// m_algaeArm.move(Volts.of(1)), m_algaeArm));
-		m_driverController.a().onTrue(new InstantCommand(m_yagslDrive::zeroGyro));
+		m_driverController.a().onTrue(new InstantCommand(m_drive::zeroGyro));
 		// m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
 		// m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
