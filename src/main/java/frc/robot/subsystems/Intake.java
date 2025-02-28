@@ -6,46 +6,51 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CoralIntakeConstants;
 
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
-  private final SparkMax m_spitMotor = new SparkMax(13,
-      com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-  private final DigitalInput IntakeSensor = new DigitalInput(2);
+  private final SparkMax motor = new SparkMax(CoralIntakeConstants.Motor.kCanId,
+      CoralIntakeConstants.Motor.kMotorType);
+  private final DigitalInput limitSwitch = new DigitalInput(CoralIntakeConstants.LimitSwitch.kPort);
 
   public Intake() {
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Intake Sensor", IntakeSensor.get());
+    SmartDashboard.putBoolean("CoralIntake/hasCoral", limitSwitch.get());
+    SmartDashboard.putNumber("CoralIntake/outputVoltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
   public boolean hasCoral() {
-    return IntakeSensor.get();
+    return limitSwitch.get();
   }
 
   public Command in() {
     return run(() -> {
-      m_spitMotor.setVoltage(2);
+      this.output(CoralIntakeConstants.Outputs.kIn);
     }).until(this::hasCoral);
   }
 
   public Command out() {
     return run(() -> {
-      m_spitMotor.setVoltage(12);
+      this.output(CoralIntakeConstants.Outputs.kOut);
     }).until(() -> {
       return !this.hasCoral();
     });
   }
 
+  public void output(Voltage output) {
+    motor.setVoltage(output);
+  }
+
   public void stop() {
-    m_spitMotor.set(0);
+    motor.set(0);
   }
 
 }
