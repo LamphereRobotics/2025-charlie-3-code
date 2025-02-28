@@ -33,6 +33,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+
+import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -145,13 +147,15 @@ public class Drive extends SubsystemBase {
         swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
         .getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.kLimelightName);
-    if (Math.abs(swerveDrive.getRobotVelocity().omegaRadiansPerSecond) > 720) // if our angular velocity is greater than
-                                                                              // 720 degrees per second, ignore
+    if (Math.abs(swerveDrive.getRobotVelocity().omegaRadiansPerSecond) > degreesToRadians(720)) // if our angular
+                                                                                                // velocity is greater
+                                                                                                // than
+    // 720 degrees per second, ignore
     // vision updates
     {
       doRejectUpdate = true;
     }
-    if (mt2.tagCount == 0) {
+    if (mt2 == null || mt2.tagCount == 0) {
       doRejectUpdate = true;
     }
     if (!doRejectUpdate) {
