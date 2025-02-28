@@ -4,7 +4,14 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +22,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.YagslDrive;
 import frc.robot.subsystems.AlgeePickupSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -29,7 +37,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 	// The robot's subsystems
-	private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+	// private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+	private final YagslDrive m_yagslDrive = new YagslDrive(new File(Filesystem.getDeployDirectory(),
+			"swerve"), Pose2d.kZero);
 	private final ClimberSubsystem m_climber = new ClimberSubsystem();
 	private final Elevator m_elevator = new Elevator();
 	private final Intake m_intake = new Intake();
@@ -46,7 +56,7 @@ public class RobotContainer {
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		m_robotDrive.zeroHeading();
+		// m_robotDrive.zeroHeading();
 
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
 		SmartDashboard.putData(m_autonomousChooser);
@@ -55,7 +65,18 @@ public class RobotContainer {
 		configureButtonBindings();
 
 		// Configure default commands
-		m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
+		// m_robotDrive.setDefaultCommand(m_robotDrive.driveTeleop(m_driverController));
+		Command driveFieldOrientedDirectAngle = m_yagslDrive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> -m_driverController.getRightX(),
+				() -> -m_driverController.getRightY());
+		Command driveFieldOriented = m_yagslDrive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDeadband));
+
+		m_yagslDrive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
 		m_intake.setDefaultCommand(new RunCommand(m_intake::stop, m_intake));
 	}
@@ -81,14 +102,15 @@ public class RobotContainer {
 		m_operatorsStick.button(9).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
 		m_operatorsStick.button(7).whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(8)
-		// .whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
+		// 		.whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kMaxPosition));
 		m_operatorsStick.button(10)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
 						.andThen(m_intake.in()));
-		m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
-				.onFalse(m_robotDrive.setSlowModeCommand(false));
-		m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
-				.onFalse(m_robotDrive.setFieldRelativeCommand(true));
+		m_driverController.a().onTrue(new InstantCommand(m_yagslDrive::zeroGyro));
+		// m_driverController.leftTrigger().onTrue(m_robotDrive.setSlowModeCommand(true))
+		// .onFalse(m_robotDrive.setSlowModeCommand(false));
+		// m_driverController.rightBumper().onTrue(m_robotDrive.setFieldRelativeCommand(false))
+		// .onFalse(m_robotDrive.setFieldRelativeCommand(true));
 	}
 
 	/**
