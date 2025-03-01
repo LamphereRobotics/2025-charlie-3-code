@@ -147,17 +147,17 @@ public class RobotContainer {
 				OIConstants.kIntakeCoral)
 				.whileTrue(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition)
 						.andThen(m_coralIntake.intake()));
-		m_operatorsStick.button(OIConstants.kIntakeAlgae)
-				.whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup)
-						.andThen(m_algaeIntake.inCommand()
-								.alongWith(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup).repeatedly())
-								.until(m_algaeIntake::hasAlgae)
-								.andThen(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kHold))));
-		m_operatorsStick.button(OIConstants.kScoreAlgae)
-				.whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kScore)
-						.andThen(m_algaeIntake.outCommand()));
-		// m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
-		// m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(m_algaeIntake.inCommand());
+		// m_operatorsStick.button(OIConstants.kIntakeAlgae)
+		// 		.whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup)
+		// 				.andThen(m_algaeIntake.inCommand()
+		// 						.alongWith(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup).repeatedly())
+		// 						.until(m_algaeIntake::hasAlgae)
+		// 						.andThen(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kHold))));
+		// m_operatorsStick.button(OIConstants.kScoreAlgae)
+		// 		.whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kScore)
+		// 				.andThen(m_algaeIntake.outCommand()));
+		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
+		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(m_algaeIntake.inCommand());
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro));
 		m_driverController.button(OIConstants.kIntakeLeft).whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
 		m_driverController.button(OIConstants.kIntakeRight).whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
