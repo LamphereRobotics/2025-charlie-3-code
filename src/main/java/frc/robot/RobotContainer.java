@@ -4,31 +4,30 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.AlgaeConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.CoralIntake;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.AlgaeArm;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Elevator;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -51,14 +50,14 @@ public class RobotContainer {
 			OIConstants.kDriverControllerPort);
 	private final CommandJoystick m_operatorsStick = new CommandJoystick(OIConstants.kOperatorStickPort);
 
-	private final SendableChooser<Command> m_autonomousChooser = new SendableChooser<Command>();
+	private final SendableChooser<Command> m_autonomousChooser = new SendableChooser<>();
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
-		m_autonomousChooser.addOption("go back",
+		m_autonomousChooser.setDefaultOption("go back",
 				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> -1).until(
 						() -> m_drive.getPose().getTranslation().getDistance(m_startingPosition.getTranslation()) > 1));
 		SmartDashboard.putData(m_autonomousChooser);
