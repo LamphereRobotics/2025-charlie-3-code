@@ -239,8 +239,9 @@ public final class Constants {
 
     public static final class Outputs {
       public static final Voltage kArmMax = Volts.of(4);
-      public static final Voltage kIntakeIn = Volts.of(-4);
+      public static final Voltage kIntakeIn = Volts.of(-6);
       public static final Voltage kIntakeOut = Volts.of(12);
+      public static final Voltage kHold = Volts.of(-2);
     }
   }
 
@@ -259,6 +260,7 @@ public final class Constants {
     public static final class Outputs {
       public static final Voltage kOut = Volts.of(12);
       public static final Voltage kIn = Volts.of(2);
+      public static final Voltage kHold = Volts.of(-1);
     }
   }
 

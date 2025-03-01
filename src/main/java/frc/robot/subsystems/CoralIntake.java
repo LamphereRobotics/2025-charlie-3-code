@@ -53,6 +53,16 @@ public class CoralIntake extends SubsystemBase {
     return this.setVoltageCommand(CoralIntakeConstants.Outputs.kOut);
   }
 
+  public Command idleCommand() {
+    return run(() -> {
+      if (this.hasCoral()) {
+        this.setVoltage(CoralIntakeConstants.Outputs.kHold);
+      } else {
+        this.stop();
+      }
+    });
+  }
+
   public Command setVoltageCommand(Voltage output) {
     return run(() -> this.setVoltage(output));
   }

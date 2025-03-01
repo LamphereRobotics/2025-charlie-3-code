@@ -85,12 +85,12 @@ public class RobotContainer {
 
 		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(new RunCommand(m_elevator::stop, m_elevator));
-		m_coralIntake.setDefaultCommand(new RunCommand(m_coralIntake::stop, m_coralIntake));
+		m_coralIntake.setDefaultCommand(m_coralIntake.idleCommand());
 		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
 			double input = -MathUtil.applyDeadband(m_operatorsStick.getRawAxis(1), OIConstants.kDeadband);
 			m_algaeArm.setVoltage(AlgaeConstants.Outputs.kArmMax.times(input));
 		}, m_algaeArm));
-		m_algaeIntake.setDefaultCommand(new RunCommand(m_algaeIntake::stop, m_algaeIntake));
+		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
 	}
 
 	/**

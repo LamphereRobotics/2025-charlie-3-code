@@ -45,6 +45,16 @@ public class AlgaeIntake extends SubsystemBase {
     return setVoltageCommand(AlgaeConstants.Outputs.kIntakeOut);
   }
 
+  public Command idleCommand() {
+    return run(() -> {
+      if (this.hasAlgae()) {
+        this.setVoltage(AlgaeConstants.Outputs.kHold);
+      } else {
+        this.stop();
+      }
+    });
+  }
+
   public Command setVoltageCommand(Voltage output) {
     return run(() -> this.setVoltage(output));
   }
