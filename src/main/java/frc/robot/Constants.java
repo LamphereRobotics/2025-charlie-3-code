@@ -187,8 +187,8 @@ public final class Constants {
     }
 
     public static final class Encoder {
-      public static final Angle kPositionConversion = Degrees.of(1.0);
-      public static final AngularVelocity kVelocityConversion = DegreesPerSecond.of(1.0);
+      public static final Angle kPositionConversion = Degrees.of(17.340);
+      public static final AngularVelocity kVelocityConversion = DegreesPerSecond.of(0.0289);
     }
 
     public static final class LimitSwitch {
@@ -196,17 +196,17 @@ public final class Constants {
     }
 
     public static final class Feedforward {
-      public static final Voltage kS = Volts.of(0.0);
+      public static final Voltage kS = Volts.of(1.1);
       public static final Voltage kG = Volts.of(0.0);
-      public static final double kV = 0.0;
+      public static final double kV = 0.00816;
     }
 
     public static final class PID {
       // Coefficients
-      public static final Per<VoltageUnit, AngleUnit> kP = Volts.per(Degrees).ofNative(0.0);
+      public static final Per<VoltageUnit, AngleUnit> kP = Volts.per(Degrees).ofNative(0.05);
       // TODO: Convert to unit type
       // Unit is volts / (degree * second)
-      public static final double kI = 0.0;
+      public static final double kI = 0.01;
       // TODO: Convert to unit type
       // Unit is volts / degree / second
       public static final double kD = 0.0;
@@ -219,28 +219,29 @@ public final class Constants {
     }
 
     public static final class Constraints {
-      public static final AngularVelocity kVelocity = DegreesPerSecond.of(360);
-      public static final AngularAcceleration kAcceleration = DegreesPerSecond.per(Second).of(360);
+      public static final AngularVelocity kVelocity = DegreesPerSecond.of(232);
+      public static final AngularAcceleration kAcceleration = DegreesPerSecond.per(Second).of(928);
       public static final double kRampRate = 0.25;
     }
 
     public static final class Positions {
-      public static final Angle kPickup = Degrees.of(45);
+      public static final Angle kPickup = Degrees.of(35);
       public static final Angle kHold = Degrees.of(90);
       public static final Angle kScore = Degrees.of(90);
 
-      public static final Angle kMinPosition = Degrees.of(20);
-      public static final Angle kMaxPosition = Degrees.of(90);
-      public static final Angle kStartPosition = Degrees.of(110);
+      public static final Angle kMinPosition = Degrees.of(35);
+      public static final Angle kMaxPosition = Degrees.of(95);
+      public static final Angle kStartPosition = Degrees.of(122);
 
-      public static final boolean kForwardSoftLimitEnabled = false;
-      public static final boolean kReverseSoftLimitEnabled = false;
+      public static final boolean kForwardSoftLimitEnabled = true;
+      public static final boolean kReverseSoftLimitEnabled = true;
     }
 
     public static final class Outputs {
       public static final Voltage kArmMax = Volts.of(4);
-      public static final Voltage kIntakeIn = Volts.of(-4);
+      public static final Voltage kIntakeIn = Volts.of(-12);
       public static final Voltage kIntakeOut = Volts.of(12);
+      public static final Voltage kHold = Volts.of(-2);
     }
   }
 
@@ -259,6 +260,7 @@ public final class Constants {
     public static final class Outputs {
       public static final Voltage kOut = Volts.of(12);
       public static final Voltage kIn = Volts.of(2);
+      public static final Voltage kHold = Volts.of(-1);
     }
   }
 
