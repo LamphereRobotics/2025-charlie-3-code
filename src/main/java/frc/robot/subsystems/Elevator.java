@@ -121,7 +121,7 @@ public class Elevator extends SubsystemBase {
   private void usePID() {
     final double pidVoltage = controller.calculate(getPosition().in(ElevatorConstants.kDistanceUnit));
     final double feedForwardVoltage = feedForward.calculate(controller.getSetpoint().velocity);
-    this.move(ElevatorConstants.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+    this.setVoltage(ElevatorConstants.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
   }
 
   public Command holdPosition() {
@@ -134,11 +134,21 @@ public class Elevator extends SubsystemBase {
     }, this::usePID).until(this::atGoal);
   }
 
-  public void move(Voltage output) {
-    leaderMotor.setVoltage(output);
+  public Command idleCommand() {
+    return run(() -> this.setVoltage(ElevatorConstants.Outputs.kDown))
+        .until(() -> this.getPosition().lte(ElevatorConstants.Positions.kIntake))
+        .andThen(this.stopCommand());
+  }
+
+  public Command stopCommand() {
+    return run(this::stop);
   }
 
   public void stop() {
-    move(ElevatorConstants.kVoltageUnit.zero());
+    setVoltage(ElevatorConstants.kVoltageUnit.zero());
+  }
+
+  public void setVoltage(Voltage output) {
+    leaderMotor.setVoltage(output);
   }
 }

@@ -147,6 +147,7 @@ public final class Constants {
      * elevator? end of the outtake?]
      */
     public static final class Positions {
+      public static final Distance kIntake = Inches.of(26.0);
       public static final Distance kL2 = Feet.of(2).plus(Inches.of(7.875));
       public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
       public static final Distance kL4 = Feet.of(6);
@@ -162,6 +163,7 @@ public final class Constants {
 
     public static final class Outputs {
       public static final Voltage kUp = Volts.of(6);
+      public static final Voltage kDown = Volts.of(-2);
     }
 
     public static final TimeUnit kTimeUnit = Seconds;
@@ -206,7 +208,7 @@ public final class Constants {
       public static final Per<VoltageUnit, AngleUnit> kP = Volts.per(Degrees).ofNative(0.05);
       // TODO: Convert to unit type
       // Unit is volts / (degree * second)
-      public static final double kI = 0.01;
+      public static final double kI = 0.0;
       // TODO: Convert to unit type
       // Unit is volts / degree / second
       public static final double kD = 0.0;
@@ -225,7 +227,7 @@ public final class Constants {
     }
 
     public static final class Positions {
-      public static final Angle kPickup = Degrees.of(35);
+      public static final Angle kPickup = Degrees.of(40);
       public static final Angle kHold = Degrees.of(90);
       public static final Angle kScore = Degrees.of(90);
 
@@ -238,7 +240,8 @@ public final class Constants {
     }
 
     public static final class Outputs {
-      public static final Voltage kArmMax = Volts.of(4);
+      public static final Voltage kArmUp = Volts.of(2);
+      public static final Voltage kArmDown = Volts.of(-2);
       public static final Voltage kIntakeIn = Volts.of(-12);
       public static final Voltage kIntakeOut = Volts.of(12);
       public static final Voltage kHold = Volts.of(-2);
@@ -259,8 +262,8 @@ public final class Constants {
 
     public static final class Outputs {
       public static final Voltage kOut = Volts.of(12);
-      public static final Voltage kIn = Volts.of(2);
-      public static final Voltage kHold = Volts.of(-1);
+      public static final Voltage kIn = Volts.of(4);
+      public static final Voltage kHold = Volts.of(-0.85);
     }
   }
 
