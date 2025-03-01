@@ -71,6 +71,8 @@ public class AlgaeArm extends SubsystemBase {
     controller.setIntegratorRange(-AlgaeConstants.PID.kIntegratorRange.in(Units.kVoltageUnit),
         AlgaeConstants.PID.kIntegratorRange
             .in(Units.kVoltageUnit));
+
+    encoder.setPosition(AlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
   }
 
   @Override
