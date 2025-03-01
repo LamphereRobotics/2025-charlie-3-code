@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,9 +38,9 @@ import frc.robot.subsystems.AlgaeIntake;
  */
 public class RobotContainer {
 	// The robot's subsystems
-	// private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+	private final Pose2d m_startingPosition = new Pose2d(0, 0, new Rotation2d(Degrees.of(180)));
 	private final Drive m_drive = new Drive(new File(Filesystem.getDeployDirectory(),
-			"swerve"), Pose2d.kZero);
+			"swerve"), m_startingPosition);
 	private final Elevator m_elevator = new Elevator();
 	private final CoralIntake m_coralIntake = new CoralIntake();
 	private final AlgaeArm m_algaeArm = new AlgaeArm();
@@ -55,6 +58,9 @@ public class RobotContainer {
 	 */
 	public RobotContainer() {
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
+		m_autonomousChooser.addOption("go back",
+				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> -1).until(
+						() -> m_drive.getPose().getTranslation().getDistance(m_startingPosition.getTranslation()) > 1));
 		SmartDashboard.putData(m_autonomousChooser);
 
 		// Configure the button bindings
