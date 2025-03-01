@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeIntake;
@@ -126,6 +127,15 @@ public class RobotContainer {
 				.andThen(m_elevator.moveToPosition(Constants.ElevatorConstants.Positions.kMinPosition));
 	}
 
+	private Command lockToHeading(Rotation2d heading) {
+		return m_drive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
+						OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
+						OIConstants.kTranslationY), OIConstants.kDeadband),
+				() -> heading);
+	}
+
 	private void configureButtonBindings() {
 		m_operatorsStick.button(OIConstants.kScoreL2)
 				.whileTrue(scoreCoralAndReturn(Constants.ElevatorConstants.Positions.kL2));
@@ -140,6 +150,8 @@ public class RobotContainer {
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(m_algaeIntake.inCommand());
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro));
+		m_driverController.button(OIConstants.kIntakeLeft).whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
+		m_driverController.button(OIConstants.kIntakeRight).whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
 		// m_driverController.button(OIConstants.kRobotRelative).onTrue(m_robotDrive.setFieldRelativeCommand(false))

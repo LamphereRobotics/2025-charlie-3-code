@@ -52,6 +52,11 @@ import edu.wpi.first.wpilibj.XboxController;
 public final class Constants {
   public static final class DriveConstants {
     public static final double kMaxSpeedMetersPerSecond = 4.2;
+
+    public static final class Positions {
+      public static final Angle kLeftIntakeHeading = Degrees.of(306);
+      public static final Angle kRightIntakeHeading = Degrees.of(54);
+    }
   }
 
   public static final class OIConstants {
@@ -71,6 +76,8 @@ public final class Constants {
     public static final int kZeroGyro = XboxController.Button.kA.value;
     public static final int kSlowMode = XboxController.Axis.kLeftTrigger.value;
     public static final int kRobotRelative = XboxController.Button.kRightBumper.value;
+    public static final int kIntakeLeft = XboxController.Button.kLeftBumper.value;
+    public static final int kIntakeRight = XboxController.Button.kRightBumper.value;
 
     // Operator axes
     public static final int kMoveAlgaeArm = 1;
