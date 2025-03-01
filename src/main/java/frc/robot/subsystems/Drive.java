@@ -33,6 +33,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+
+import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -53,7 +55,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class YagslDrive extends SubsystemBase {
+public class Drive extends SubsystemBase {
 
   /**
    * Swerve drive object.
@@ -70,7 +72,7 @@ public class YagslDrive extends SubsystemBase {
    * @param directory   Directory of swerve drive config files.
    * @param initialPose The pose the robot is in on startup.
    */
-  public YagslDrive(File directory, Pose2d initialPose) {
+  public Drive(File directory, Pose2d initialPose) {
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -86,8 +88,9 @@ public class YagslDrive extends SubsystemBase {
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via
                                              // angle.
-    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
-                                            // simulations since it causes discrepancies not seen in real life.
+    swerveDrive.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);// !SwerveDriveTelemetry.isSimulation); //
+                                                                         // Disables cosine compensation for
+    // simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,
         true,
         0.1); // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -113,7 +116,7 @@ public class YagslDrive extends SubsystemBase {
    * @param driveCfg      SwerveDriveConfiguration for the swerve.
    * @param controllerCfg Swerve Controller.
    */
-  public YagslDrive(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
+  public Drive(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
     swerveDrive = new SwerveDrive(driveCfg,
         controllerCfg,
         Constants.DriveConstants.kMaxSpeedMetersPerSecond,
@@ -144,13 +147,15 @@ public class YagslDrive extends SubsystemBase {
         swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
         .getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.kLimelightName);
-    if (Math.abs(swerveDrive.getRobotVelocity().omegaRadiansPerSecond) > 720) // if our angular velocity is greater than
-                                                                              // 720 degrees per second, ignore
+    if (Math.abs(swerveDrive.getRobotVelocity().omegaRadiansPerSecond) > degreesToRadians(720)) // if our angular
+                                                                                                // velocity is greater
+                                                                                                // than
+    // 720 degrees per second, ignore
     // vision updates
     {
       doRejectUpdate = true;
     }
-    if (mt2.tagCount == 0) {
+    if (mt2 == null || mt2.tagCount == 0) {
       doRejectUpdate = true;
     }
     if (!doRejectUpdate) {

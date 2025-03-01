@@ -33,23 +33,28 @@ public class AlgaeIntake extends SubsystemBase {
     return limitSwitch.get();
   }
 
+  public boolean noAlgae() {
+    return !hasAlgae();
+  }
+
   public Command inCommand() {
-    return run(() -> {
-      output(AlgaeConstants.Outputs.kIntakeIn);
-    }).until(this::hasAlgae);
+    return setVoltageCommand(AlgaeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
   }
 
   public Command outCommand() {
-    return run(() -> {
-      output(AlgaeConstants.Outputs.kIntakeOut);
-    });
+    return setVoltageCommand(AlgaeConstants.Outputs.kIntakeOut);
   }
 
-  public void output(Voltage output) {
-    motor.setVoltage(output);
+  public Command setVoltageCommand(Voltage output) {
+    return run(() -> this.setVoltage(output));
   }
 
   public void stop() {
-    motor.setVoltage(Units.kVoltageUnit.zero());
+    this.setVoltage(Units.kVoltageUnit.zero());
   }
+
+  public void setVoltage(Voltage output) {
+    motor.setVoltage(output);
+  }
+
 }
