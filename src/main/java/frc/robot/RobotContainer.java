@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.AlgaeConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
@@ -87,10 +86,7 @@ public class RobotContainer {
 		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle);
 		m_elevator.setDefaultCommand(m_elevator.idleCommand());
 		m_coralIntake.setDefaultCommand(m_coralIntake.idleCommand());
-		m_algaeArm.setDefaultCommand(new RunCommand(() -> {
-			double input = -MathUtil.applyDeadband(m_operatorsStick.getRawAxis(1), OIConstants.kDeadband);
-			m_algaeArm.setVoltage(AlgaeConstants.Outputs.kArmMax.times(input));
-		}, m_algaeArm));
+		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
 		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
 	}
 
@@ -137,6 +133,10 @@ public class RobotContainer {
 				() -> heading);
 	}
 
+	private Command pickupAlgae() {
+		return m_algaeArm.downCommand().raceWith(m_algaeIntake.inCommand());
+	}
+
 	private void configureButtonBindings() {
 		m_operatorsStick.button(OIConstants.kScoreL2)
 				.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
@@ -147,17 +147,8 @@ public class RobotContainer {
 		m_operatorsStick.button(
 				OIConstants.kIntakeCoral)
 				.whileTrue(m_coralIntake.intake());
-		// m_operatorsStick.button(OIConstants.kIntakeAlgae)
-		// .whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup)
-		// .andThen(m_algaeIntake.inCommand()
-		// .alongWith(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kPickup).repeatedly())
-		// .until(m_algaeIntake::hasAlgae)
-		// .andThen(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kHold))));
-		// m_operatorsStick.button(OIConstants.kScoreAlgae)
-		// .whileTrue(m_algaeArm.moveToPosition(AlgaeConstants.Positions.kScore)
-		// .andThen(m_algaeIntake.outCommand()));
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
-		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(m_algaeIntake.inCommand());
+		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro));
 		m_driverController.button(OIConstants.kIntakeLeft)
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));

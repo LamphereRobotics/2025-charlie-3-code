@@ -10,10 +10,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -27,21 +23,6 @@ public class AlgaeArm extends SubsystemBase {
   private final SparkMax motor = new SparkMax(AlgaeConstants.ArmMotor.kCanId,
       AlgaeConstants.ArmMotor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
-
-  private final ArmFeedforward feedForward = new ArmFeedforward(
-      AlgaeConstants.Feedforward.kS.in(Units.kVoltageUnit),
-      AlgaeConstants.Feedforward.kG.in(Units.kVoltageUnit),
-      AlgaeConstants.Feedforward.kV);
-
-  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-      AlgaeConstants.Constraints.kVelocity.in(Units.kAngularVelocityUnit),
-      AlgaeConstants.Constraints.kAcceleration.in(Units.kAngularAccelerationUnit));
-  private final ProfiledPIDController controller = new ProfiledPIDController(
-      AlgaeConstants.PID.kP.in(Units.kVoltageUnit.per(Units.kAngleUnit)),
-      AlgaeConstants.PID.kI,
-      AlgaeConstants.PID.kD,
-      constraints);
-  // #endregion
 
   public AlgaeArm() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
@@ -64,14 +45,6 @@ public class AlgaeArm extends SubsystemBase {
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    controller.setTolerance(AlgaeConstants.PID.kPositionTolerance.in(
-        Units.kAngleUnit),
-        AlgaeConstants.PID.kVelocityTolerance.in(Units.kAngularVelocityUnit));
-    controller.setIZone(AlgaeConstants.PID.kIZone.in(Units.kAngleUnit));
-    controller.setIntegratorRange(-AlgaeConstants.PID.kIntegratorRange.in(Units.kVoltageUnit),
-        AlgaeConstants.PID.kIntegratorRange
-            .in(Units.kVoltageUnit));
-
     encoder.setPosition(AlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
   }
 
@@ -90,37 +63,35 @@ public class AlgaeArm extends SubsystemBase {
     return Units.kAngularVelocityUnit.of(encoder.getVelocity());
   }
 
-  public void setGoal(Angle position) {
-    controller.setGoal(position.in(Units.kAngleUnit));
+  public Command upCommand() {
+    return run(this::up)
+        .until(() -> this.getPosition().gte(AlgaeConstants.Positions.kHold))
+        .andThen(this.stopCommand());
   }
 
-  public boolean atGoal() {
-    return controller.atGoal();
+  public Command downCommand() {
+    return run(this::down)
+        .until(() -> this.getPosition().lte(AlgaeConstants.Positions.kPickup))
+        .andThen(this.stopCommand());
   }
 
-  private void usePID() {
-    final double pidVoltage = controller.calculate(getPosition().in(Units.kAngleUnit));
-    final double feedForwardVoltage = feedForward.calculate(getPosition().in(Radians),
-        controller.getSetpoint().velocity);
-    this.setVoltage(Units.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+  public Command stopCommand() {
+    return run(this::stop);
   }
 
-  public Command holdPosition() {
-    return run(this::usePID);
+  public void up() {
+    this.setVoltage(AlgaeConstants.Outputs.kArmUp);
   }
 
-  public Command moveToPosition(Angle position) {
-    return startRun(() -> {
-      setGoal(position);
-    }, this::usePID).until(this::atGoal);
-
-  }
-
-  public void setVoltage(Voltage output) {
-    motor.setVoltage(output);
+  public void down() {
+    this.setVoltage(AlgaeConstants.Outputs.kArmDown);
   }
 
   public void stop() {
     setVoltage(Units.kVoltageUnit.zero());
+  }
+
+  public void setVoltage(Voltage output) {
+    motor.setVoltage(output);
   }
 }
