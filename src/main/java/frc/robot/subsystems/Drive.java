@@ -33,7 +33,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-
 import static edu.wpi.first.math.util.Units.degreesToRadians;
 import static edu.wpi.first.units.Units.Meter;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -437,6 +436,27 @@ public class Drive extends SubsystemBase {
           headingY.getAsDouble(),
           swerveDrive.getOdometryHeading().getRadians(),
           swerveDrive.getMaximumChassisVelocity()));
+    });
+  }
+
+  /**
+   * Command to drive the robot using translative values and heading as a
+   * setpoint.
+   *
+   * @param translationX Translation in the X direction. Cubed for smoother
+   *                     controls.
+   * @param translationY Translation in the Y direction. Cubed for smoother
+   *                     controls.
+   * @param heading      The target heading of the robot.
+   * @return Drive command.
+   */
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> heading) {
+    swerveDrive.setHeadingCorrection(true);
+    return run(() -> {
+      System.out.println("doin the lock");
+      swerveDrive.swerveController.lastAngleScalar = heading.get().getRadians();
+      // Make the robot move
+      driveFieldOriented(this.getTargetSpeeds(translationX.getAsDouble(), translationY.getAsDouble(), heading.get()));
     });
   }
 

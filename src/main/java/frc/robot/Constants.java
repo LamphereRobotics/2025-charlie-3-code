@@ -9,11 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import static edu.wpi.first.math.util.Units.inchesToMeters;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularAccelerationUnit;
 import edu.wpi.first.units.AngularVelocityUnit;
@@ -21,7 +17,15 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearAccelerationUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.TimeUnit;
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.Inch;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
@@ -31,7 +35,6 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
@@ -48,81 +51,12 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 2;
-    public static final int kRearLeftDriveMotorPort = 8;
-    public static final int kFrontRightDriveMotorPort = 4;
-    public static final int kRearRightDriveMotorPort = 6;
-
-    public static final int kFrontLeftTurningMotorPort = 1;
-    public static final int kRearLeftTurningMotorPort = 7;
-    public static final int kFrontRightTurningMotorPort = 3;
-    public static final int kRearRightTurningMotorPort = 5;
-
-    public static final int kFrontLeftTurningEncoderPorts = 1;
-    public static final int kRearLeftTurningEncoderPorts = 4;
-    public static final int kFrontRightTurningEncoderPorts = 2;
-    public static final int kRearRightTurningEncoderPorts = 3;
-
-    public static final boolean kFrontLeftTurningEncoderReversed = false;
-    public static final boolean kRearLeftTurningEncoderReversed = false;
-    public static final boolean kFrontRightTurningEncoderReversed = false;
-    public static final boolean kRearRightTurningEncoderReversed = false;
-
-    public static final int kGyroPort = 1;
-
-    public static final double kDriveScale = (inchesToMeters(4) * Math.PI) / 6.75;
-
-    // If you call DriveSubsystem.drive() with a different period make sure to
-    // update this.
-    public static final double kDrivePeriod = TimedRobot.kDefaultPeriod;
-
-    public static final double kTrackWidth = 0.57;
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.58;
-    // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
-
-    public static final boolean kGyroReversed = false;
-
-    // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-    // These characterization values MUST be determined either experimentally or
-    // theoretically
-    // for *your* robot's drive.
-    // The SysId tool provides a convenient method for obtaining these values for
-    // your robot.
-
     public static final double kMaxSpeedMetersPerSecond = 4.2;
-    public static final double kMaxRotationRadiansPerSecond = Math.PI * 2;
-  }
 
-  public static final class ModuleConstants {
-    public static final double kMaxModuleAngularSpeedRadiansPerSecond = 28.5;
-    public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 386.9717;
-    public static final double kMaxModuleSpeedMetersPerSecond = 4.2;
-
-    public static final double kPModuleTurningController = 2.0;
-    public static final double kIModuleTurningController = 5.0;
-    public static final double kDModuleTurningController = 0.0;
-    public static final double kSModuleTurningFeedforward = 0.38;
-    public static final double kVModuleTurningFeedforward = 0.3961;
-    public static final double kPositionToleranceModuleTurningController = 0.1;
-    public static final double kVelocityToleranceModuleTurningController = 0.5;
-    public static final double kIZoneModuleTurningController = 2.0;
-    public static final double kIntegratorMaxModuleTurningController = 2.0;
-
-    public static final double kPModuleDriveController = 0.5;
-    public static final double kIModuleDriveController = 0.0;
-    public static final double kDModuleDriveController = 0.0;
-    public static final double kSModuleDriveFeedforward = 0.25156;
-    public static final double kVModuleDriveFeedforward = 2.5633;
-    public static final double kToleranceModuleDriveController = 0.005;
-
-    public static final int kMaxDriveCurrent = 30;
-    public static final int kMaxTurnCurrent = 20;
+    public static final class Positions {
+      public static final Angle kLeftIntakeHeading = Degrees.of(306);
+      public static final Angle kRightIntakeHeading = Degrees.of(54);
+    }
   }
 
   public static final class OIConstants {
@@ -142,6 +76,8 @@ public final class Constants {
     public static final int kZeroGyro = XboxController.Button.kA.value;
     public static final int kSlowMode = XboxController.Axis.kLeftTrigger.value;
     public static final int kRobotRelative = XboxController.Button.kRightBumper.value;
+    public static final int kIntakeLeft = XboxController.Button.kLeftBumper.value;
+    public static final int kIntakeRight = XboxController.Button.kRightBumper.value;
 
     // Operator axes
     public static final int kMoveAlgaeArm = 1;
@@ -326,20 +262,7 @@ public final class Constants {
     }
   }
 
-  public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 4.2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 14.2985;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 2;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI * 4;
-
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
-
-    // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-  }
+  public static final class AutoConstants {}
 
   public static final class LimelightConstants {
     public static final boolean kUseMegaTag2 = true;
