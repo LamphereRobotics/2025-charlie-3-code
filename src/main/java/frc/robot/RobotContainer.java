@@ -149,6 +149,7 @@ public class RobotContainer {
 				.whileTrue(m_coralIntake.intake());
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
+		m_operatorsStick.button(OIConstants.kEjectCoral).whileTrue(m_coralIntake.outCommand());
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro));
 		m_driverController.button(OIConstants.kIntakeLeft)
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
