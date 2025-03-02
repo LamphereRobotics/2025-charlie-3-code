@@ -167,6 +167,8 @@ public class RobotContainer {
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
 		m_driverController.button(OIConstants.kIntakeRight)
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
+		m_driverController.leftTrigger()
+				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
 		m_driverController.rightTrigger().whileTrue(driveFieldOrientedInverseDirectAngle());
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
