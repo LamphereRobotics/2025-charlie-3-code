@@ -150,12 +150,12 @@ public class RobotContainer {
 	}
 
 	private void configureButtonBindings() {
-		m_operatorsStick.button(OIConstants.kScoreL2)
-				.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
-		m_operatorsStick.button(
-				OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
+		// m_operatorsStick.button(OIConstants.kScoreL2)
+		// 		.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
+		// m_operatorsStick.button(
+		// 		OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(OIConstants.kScoreL4)
-		// .whileTrue(launchL4());
+		// .whileTrue(launchL4()); 
 		m_operatorsStick.button(
 				OIConstants.kIntakeCoral)
 				.whileTrue(m_coralIntake.intake());
@@ -167,6 +167,8 @@ public class RobotContainer {
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
 		m_driverController.button(OIConstants.kIntakeRight)
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
+		m_driverController.leftTrigger()
+				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
 		m_driverController.rightTrigger().whileTrue(driveFieldOrientedInverseDirectAngle());
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));

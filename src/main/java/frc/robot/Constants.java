@@ -56,6 +56,7 @@ public final class Constants {
     public static final class Positions {
       public static final Angle kLeftIntakeHeading = Degrees.of(306);
       public static final Angle kRightIntakeHeading = Degrees.of(54);
+      public static final Angle kProcessorHeading = Degrees.of(90);
     }
   }
 
