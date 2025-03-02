@@ -37,7 +37,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return this.inCommand().until(this::hasCoral).andThen(this.inCommand().until(this::noCoral));
+    return this.inCommand().until(this::hasCoral).andThen(this.in2Command().until(this::noCoral));
   }
 
   public Command score() {
@@ -49,18 +49,23 @@ public class CoralIntake extends SubsystemBase {
     return this.setVoltageCommand(CoralIntakeConstants.Outputs.kIn);
   }
 
+  public Command in2Command() {
+    return this.setVoltageCommand(CoralIntakeConstants.Outputs.kIn2);
+  }
+
   public Command outCommand() {
     return this.setVoltageCommand(CoralIntakeConstants.Outputs.kOut);
   }
 
   public Command idleCommand() {
-    return run(() -> {
-      if (this.hasCoral()) {
-        this.setVoltage(CoralIntakeConstants.Outputs.kHold);
-      } else {
-        this.stop();
-      }
-    });
+    return run(() -> this.setVoltage(CoralIntakeConstants.Outputs.kHold));
+    // return run(() -> {
+    // if (this.hasCoral()) {
+    // this.setVoltage(CoralIntakeConstants.Outputs.kHold);
+    // } else {
+    // this.stop();
+    // }
+    // });
   }
 
   public Command setVoltageCommand(Voltage output) {
