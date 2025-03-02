@@ -63,31 +63,44 @@ public class RobotContainer {
 						() -> m_drive.getPose().getTranslation().getDistance(m_startingPosition.getTranslation()) > 1));
 		SmartDashboard.putData(m_autonomousChooser);
 
-		// Configure the button bindings
 		configureButtonBindings();
 
-		// Configure default commands
-		Command driveFieldOrientedDirectAngle = m_drive.driveCommand(
+		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle());
+		m_elevator.setDefaultCommand(m_elevator.idleCommand());
+		m_coralIntake.setDefaultCommand(m_coralIntake.idleCommand());
+		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
+		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
+	}
+
+	private Command driveFieldOrientedDirectAngle() {
+		return m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
 						OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
 						OIConstants.kTranslationY), OIConstants.kDeadband),
 				() -> -m_driverController.getRawAxis(OIConstants.kHeadingX),
 				() -> -m_driverController.getRawAxis(OIConstants.kHeadingY));
-		@SuppressWarnings("unused")
-		Command driveFieldOriented = m_drive.driveCommand(
+	}
+
+	private Command driveFieldOrientedInverseDirectAngle() {
+		return m_drive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
+						OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
+						OIConstants.kTranslationY), OIConstants.kDeadband),
+				() -> m_driverController.getRawAxis(OIConstants.kHeadingX),
+				() -> m_driverController.getRawAxis(OIConstants.kHeadingY));
+	}
+
+	@SuppressWarnings("unused")
+	private Command driveFieldOriented() {
+		return m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
 						OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
 						OIConstants.kTranslationY), OIConstants.kDeadband),
 				() -> -MathUtil.applyDeadband(
 						m_driverController.getRawAxis(OIConstants.kRotation), OIConstants.kDeadband));
-
-		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle);
-		m_elevator.setDefaultCommand(m_elevator.idleCommand());
-		m_coralIntake.setDefaultCommand(m_coralIntake.idleCommand());
-		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
-		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
 	}
 
 	/**
@@ -99,7 +112,6 @@ public class RobotContainer {
 	 * passing it to a
 	 * {@link JoystickButton}.
 	 */
-
 	private Command scoreCoralAndReturn(Distance position) {
 		return m_elevator.moveToPosition(position)
 				.andThen(m_coralIntake.score().raceWith(m_elevator.holdPosition()))
@@ -155,6 +167,7 @@ public class RobotContainer {
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
 		m_driverController.button(OIConstants.kIntakeRight)
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
+		m_driverController.rightTrigger().whileTrue(driveFieldOrientedInverseDirectAngle());
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
 		// m_driverController.button(OIConstants.kRobotRelative).onTrue(m_robotDrive.setFieldRelativeCommand(false))
