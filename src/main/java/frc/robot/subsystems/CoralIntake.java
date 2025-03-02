@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.Units;
 
@@ -38,11 +37,12 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return this.inCommand().until(this::hasCoral);
+    return this.inCommand().until(this::hasCoral).andThen(this.inCommand().until(this::noCoral));
   }
 
   public Command score() {
-    return this.outCommand().until(this::noCoral);
+    return this.outCommand().until(this::noCoral)
+        .andThen(this.outCommand().withTimeout(CoralIntakeConstants.Timing.kScoreDelay));
   }
 
   public Command inCommand() {

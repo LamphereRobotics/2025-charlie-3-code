@@ -34,6 +34,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -266,6 +267,10 @@ public final class Constants {
       public static final Voltage kOut = Volts.of(12);
       public static final Voltage kIn = Volts.of(4);
       public static final Voltage kHold = Volts.of(-0.85);
+    }
+
+    public static final class Timing {
+      public static final Time kScoreDelay = Seconds.of(0.5);
     }
   }
 
