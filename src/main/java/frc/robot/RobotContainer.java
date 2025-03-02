@@ -150,12 +150,12 @@ public class RobotContainer {
 	}
 
 	private void configureButtonBindings() {
-		m_operatorsStick.button(OIConstants.kScoreL2)
-				.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
-		m_operatorsStick.button(
-				OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
+		// m_operatorsStick.button(OIConstants.kScoreL2)
+		// 		.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
+		// m_operatorsStick.button(
+		// 		OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(OIConstants.kScoreL4)
-		// .whileTrue(launchL4());
+		// .whileTrue(launchL4()); 
 		m_operatorsStick.button(
 				OIConstants.kIntakeCoral)
 				.whileTrue(m_coralIntake.intake());
