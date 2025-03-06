@@ -17,32 +17,49 @@ import frc.robot.Constants.Units;
 public class CoralIntake extends SubsystemBase {
   private final SparkMax motor = new SparkMax(CoralIntakeConstants.Motor.kCanId,
       CoralIntakeConstants.Motor.kMotorType);
-  private final DigitalInput limitSwitch = new DigitalInput(CoralIntakeConstants.LimitSwitch.kPort);
+  private final DigitalInput innerLimitSwitch = new DigitalInput(CoralIntakeConstants.LimitSwitch.kInnerPort);
+  private final DigitalInput outerLimitSwitch = new DigitalInput(CoralIntakeConstants.LimitSwitch.kOuterPort);
 
   public CoralIntake() {
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("CoralIntake/hasCoral", hasCoral());
+    SmartDashboard.putBoolean("CoralIntake/hasCoral", hasInnerCoral());
     SmartDashboard.putNumber("CoralIntake/outputVoltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
-  public boolean hasCoral() {
-    return limitSwitch.get();
+  public boolean hasInnerCoral() {
+    return innerLimitSwitch.get();
   }
 
-  public boolean noCoral() {
-    return !hasCoral();
+  public boolean noInnerCoral() {
+    return !hasInnerCoral();
+  }
+
+  public boolean hasOuterCoral() {
+    return outerLimitSwitch.get();
+  }
+
+  public boolean noOuterCoral() {
+    return !hasOuterCoral();
+  }
+
+  public boolean hasAnyCoral() {
+    return hasInnerCoral() || hasOuterCoral();
+  }
+
+  public boolean noAnyCoral() {
+    return !hasAnyCoral();
   }
 
   public Command intake() {
-    return this.inCommand().until(this::hasCoral).andThen(this.in2Command().until(this::noCoral));
+    return this.inCommand().until(this::hasInnerCoral)
+        .andThen(this.in2Command().until(this::hasOuterCoral));
   }
 
   public Command score() {
-    return this.outCommand().until(this::noCoral)
-        .andThen(this.outCommand().withTimeout(CoralIntakeConstants.Timing.kScoreDelay));
+    return this.outCommand().until(this::noAnyCoral);
   }
 
   public Command inCommand() {
@@ -58,14 +75,13 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command idleCommand() {
-    return run(() -> this.setVoltage(CoralIntakeConstants.Outputs.kHold));
-    // return run(() -> {
-    // if (this.hasCoral()) {
-    // this.setVoltage(CoralIntakeConstants.Outputs.kHold);
-    // } else {
-    // this.stop();
-    // }
-    // });
+    return run(() -> {
+      if (this.hasOuterCoral()) {
+        this.setVoltage(CoralIntakeConstants.Outputs.kHold);
+      } else {
+        this.stop();
+      }
+    });
   }
 
   public Command setVoltageCommand(Voltage output) {

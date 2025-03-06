@@ -130,7 +130,7 @@ public class RobotContainer {
 				m_coralIntake.stop();
 			}
 		}, m_coralIntake))
-				.until(() -> !m_coralIntake.hasCoral()
+				.until(() -> !m_coralIntake.hasInnerCoral()
 						&& m_elevator.getPosition().gte(ElevatorConstants.Positions.kMaxPosition))
 				.andThen(new InstantCommand(m_coralIntake::stop, m_coralIntake))
 				.andThen(m_elevator.moveToPosition(ElevatorConstants.Positions.kMinPosition));
@@ -151,11 +151,11 @@ public class RobotContainer {
 
 	private void configureButtonBindings() {
 		// m_operatorsStick.button(OIConstants.kScoreL2)
-		// 		.whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
+		// .whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL2));
 		// m_operatorsStick.button(
-		// 		OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
+		// OIConstants.kScoreL3).whileTrue(scoreCoralAndReturn(ElevatorConstants.Positions.kL3));
 		// m_operatorsStick.button(OIConstants.kScoreL4)
-		// .whileTrue(launchL4()); 
+		// .whileTrue(launchL4());
 		m_operatorsStick.button(
 				OIConstants.kIntakeCoral)
 				.whileTrue(m_coralIntake.intake());

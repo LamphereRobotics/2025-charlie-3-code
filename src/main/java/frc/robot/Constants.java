@@ -260,7 +260,8 @@ public final class Constants {
     }
 
     public static final class LimitSwitch {
-      public static final int kPort = 2;
+      public static final int kInnerPort = 2;
+      public static final int kOuterPort = 3;
     }
 
     public static final class Outputs {
@@ -275,7 +276,8 @@ public final class Constants {
     }
   }
 
-  public static final class AutoConstants {}
+  public static final class AutoConstants {
+  }
 
   public static final class LimelightConstants {
     public static final boolean kUseMegaTag2 = true;
