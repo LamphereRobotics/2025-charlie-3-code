@@ -11,22 +11,22 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.GroundAlgaeConstants;
 import frc.robot.Constants.Units;
 
-public class AlgaeIntake extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(AlgaeConstants.IntakeMotor.kCanId,
-      AlgaeConstants.IntakeMotor.kMotorType);
-  private final DigitalInput limitSwitch = new DigitalInput(AlgaeConstants.LimitSwitch.kPort);
+public class GroundAlgaeIntake extends SubsystemBase {
+  private final SparkMax motor = new SparkMax(GroundAlgaeConstants.IntakeMotor.kCanId,
+      GroundAlgaeConstants.IntakeMotor.kMotorType);
+  private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeConstants.LimitSwitch.kPort);
 
   /** Creates a new AlgaeIntake. */
-  public AlgaeIntake() {
+  public GroundAlgaeIntake() {
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Algae/Intake/hasAlgae", this.hasAlgae());
-    SmartDashboard.putNumber("Algae/Intake/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+    SmartDashboard.putBoolean("GroundAlgae/Intake/hasAlgae", this.hasAlgae());
+    SmartDashboard.putNumber("GroundAlgae/Intake/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
   public boolean hasAlgae() {
@@ -38,17 +38,17 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   public Command inCommand() {
-    return setVoltageCommand(AlgaeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
+    return setVoltageCommand(GroundAlgaeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
   }
 
   public Command outCommand() {
-    return setVoltageCommand(AlgaeConstants.Outputs.kIntakeOut);
+    return setVoltageCommand(GroundAlgaeConstants.Outputs.kIntakeOut);
   }
 
   public Command idleCommand() {
     return run(() -> {
       if (this.hasAlgae()) {
-        this.setVoltage(AlgaeConstants.Outputs.kHold);
+        this.setVoltage(GroundAlgaeConstants.Outputs.kHold);
       } else {
         this.stop();
       }

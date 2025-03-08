@@ -16,43 +16,43 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AlgaeConstants;
+import frc.robot.Constants.GroundAlgaeConstants;
 import frc.robot.Constants.Units;
 
-public class AlgaeArm extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(AlgaeConstants.ArmMotor.kCanId,
-      AlgaeConstants.ArmMotor.kMotorType);
+public class GroundAlgaeArm extends SubsystemBase {
+  private final SparkMax motor = new SparkMax(GroundAlgaeConstants.ArmMotor.kCanId,
+      GroundAlgaeConstants.ArmMotor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
 
-  public AlgaeArm() {
+  public GroundAlgaeArm() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
 
     motorConfig
-        .inverted(AlgaeConstants.ArmMotor.kInverted)
-        .idleMode(AlgaeConstants.ArmMotor.kIdleMode)
-        .openLoopRampRate(AlgaeConstants.Constraints.kRampRate);
+        .inverted(GroundAlgaeConstants.ArmMotor.kInverted)
+        .idleMode(GroundAlgaeConstants.ArmMotor.kIdleMode)
+        .openLoopRampRate(GroundAlgaeConstants.Constraints.kRampRate);
 
     motorConfig.encoder
-        .positionConversionFactor(AlgaeConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
+        .positionConversionFactor(GroundAlgaeConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
         .velocityConversionFactor(
-            AlgaeConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
+            GroundAlgaeConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
 
     motorConfig.softLimit
-        .forwardSoftLimitEnabled(AlgaeConstants.Positions.kForwardSoftLimitEnabled)
-        .forwardSoftLimit(AlgaeConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
-        .reverseSoftLimitEnabled(AlgaeConstants.Positions.kReverseSoftLimitEnabled)
-        .reverseSoftLimit(AlgaeConstants.Positions.kMinPosition.in(Units.kAngleUnit));
+        .forwardSoftLimitEnabled(GroundAlgaeConstants.Positions.kForwardSoftLimitEnabled)
+        .forwardSoftLimit(GroundAlgaeConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
+        .reverseSoftLimitEnabled(GroundAlgaeConstants.Positions.kReverseSoftLimitEnabled)
+        .reverseSoftLimit(GroundAlgaeConstants.Positions.kMinPosition.in(Units.kAngleUnit));
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    encoder.setPosition(AlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
+    encoder.setPosition(GroundAlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Algae/Arm/position", encoder.getPosition());
-    SmartDashboard.putNumber("Algae/Arm/velocity", encoder.getVelocity());
-    SmartDashboard.putNumber("Algae/Arm/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+    SmartDashboard.putNumber("GroundAlgae/Arm/position", encoder.getPosition());
+    SmartDashboard.putNumber("GroundAlgae/Arm/velocity", encoder.getVelocity());
+    SmartDashboard.putNumber("GroundAlgae/Arm/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
   public Angle getPosition() {
@@ -80,11 +80,11 @@ public class AlgaeArm extends SubsystemBase {
   }
 
   public void up() {
-    this.setVoltage(AlgaeConstants.Outputs.kArmUp);
+    this.setVoltage(GroundAlgaeConstants.Outputs.kArmUp);
   }
 
   public void down() {
-    this.setVoltage(AlgaeConstants.Outputs.kArmDown);
+    this.setVoltage(GroundAlgaeConstants.Outputs.kArmDown);
   }
 
   public void stop() {
