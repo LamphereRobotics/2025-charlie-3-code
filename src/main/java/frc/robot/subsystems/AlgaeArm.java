@@ -64,15 +64,15 @@ public class AlgaeArm extends SubsystemBase {
   }
 
   public Command upCommand() {
-    return run(this::up)
-        .until(() -> this.getPosition().gte(AlgaeConstants.Positions.kHold))
-        .andThen(this.stopCommand());
+    return run(this::up);
+        // .until(() -> this.getPosition().gte(AlgaeConstants.Positions.kHold))
+        // .andThen(this.stopCommand());
   }
 
   public Command downCommand() {
-    return run(this::down)
-        .until(() -> this.getPosition().lte(AlgaeConstants.Positions.kPickup))
-        .andThen(this.stopCommand());
+    return run(this::down);
+        // .until(() -> this.getPosition().lte(AlgaeConstants.Positions.kPickup))
+        // .andThen(this.stopCommand());
   }
 
   public Command stopCommand() {
