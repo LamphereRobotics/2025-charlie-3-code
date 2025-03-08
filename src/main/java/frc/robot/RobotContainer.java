@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.GroundAlgaeArm;
-import frc.robot.subsystems.GroundAlgaeIntake;
+import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
+import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 

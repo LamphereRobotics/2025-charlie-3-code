@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.UpperAlgaeArm;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -16,43 +16,43 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.GroundAlgaeConstants;
+import frc.robot.Constants.UpperAlgaeConstants;
 import frc.robot.Constants.Units;
 
-public class GroundAlgaeArm extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(GroundAlgaeConstants.ArmMotor.kCanId,
-      GroundAlgaeConstants.ArmMotor.kMotorType);
+public class UpperAlgaeArm extends SubsystemBase {
+  private final SparkMax motor = new SparkMax(UpperAlgaeConstants.ArmMotor.kCanId,
+      UpperAlgaeConstants.ArmMotor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
 
-  public GroundAlgaeArm() {
+  public UpperAlgaeArm() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
 
     motorConfig
-        .inverted(GroundAlgaeConstants.ArmMotor.kInverted)
-        .idleMode(GroundAlgaeConstants.ArmMotor.kIdleMode)
-        .openLoopRampRate(GroundAlgaeConstants.Constraints.kRampRate);
+        .inverted(UpperAlgaeConstants.ArmMotor.kInverted)
+        .idleMode(UpperAlgaeConstants.ArmMotor.kIdleMode)
+        .openLoopRampRate(UpperAlgaeConstants.Constraints.kRampRate);
 
     motorConfig.encoder
-        .positionConversionFactor(GroundAlgaeConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
+        .positionConversionFactor(UpperAlgaeConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
         .velocityConversionFactor(
-            GroundAlgaeConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
+            UpperAlgaeConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
 
     motorConfig.softLimit
-        .forwardSoftLimitEnabled(GroundAlgaeConstants.Positions.kForwardSoftLimitEnabled)
-        .forwardSoftLimit(GroundAlgaeConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
-        .reverseSoftLimitEnabled(GroundAlgaeConstants.Positions.kReverseSoftLimitEnabled)
-        .reverseSoftLimit(GroundAlgaeConstants.Positions.kMinPosition.in(Units.kAngleUnit));
+        .forwardSoftLimitEnabled(UpperAlgaeConstants.Positions.kForwardSoftLimitEnabled)
+        .forwardSoftLimit(UpperAlgaeConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
+        .reverseSoftLimitEnabled(UpperAlgaeConstants.Positions.kReverseSoftLimitEnabled)
+        .reverseSoftLimit(UpperAlgaeConstants.Positions.kMinPosition.in(Units.kAngleUnit));
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    encoder.setPosition(GroundAlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
+    encoder.setPosition(UpperAlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("GroundAlgae/Arm/position", encoder.getPosition());
-    SmartDashboard.putNumber("GroundAlgae/Arm/velocity", encoder.getVelocity());
-    SmartDashboard.putNumber("GroundAlgae/Arm/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+    SmartDashboard.putNumber("UpperAlgae/Arm/position", encoder.getPosition());
+    SmartDashboard.putNumber("UpperAlgae/Arm/velocity", encoder.getVelocity());
+    SmartDashboard.putNumber("UpperAlgae/Arm/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
   }
 
   public Angle getPosition() {
@@ -80,11 +80,11 @@ public class GroundAlgaeArm extends SubsystemBase {
   }
 
   public void up() {
-    this.setVoltage(GroundAlgaeConstants.Outputs.kArmUp);
+    this.setVoltage(UpperAlgaeConstants.Outputs.kArmUp);
   }
 
   public void down() {
-    this.setVoltage(GroundAlgaeConstants.Outputs.kArmDown);
+    this.setVoltage(UpperAlgaeConstants.Outputs.kArmDown);
   }
 
   public void stop() {
