@@ -18,7 +18,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class UpperAlgaeArmConstants {
     public static final class ArmMotor {
-        public static final int kCanId = 11;
+        public static final int kCanId = 14;
         public static final boolean kInverted = false;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final MotorType kMotorType = MotorType.kBrushless;

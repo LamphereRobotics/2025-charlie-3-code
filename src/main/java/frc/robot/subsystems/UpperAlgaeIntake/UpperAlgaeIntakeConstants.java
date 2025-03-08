@@ -12,21 +12,21 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class UpperAlgaeIntakeConstants {
     public static final class LeaderMotor {
-        public static final int kCanId = 12;
+        public static final int kCanId = 15;
         public static final boolean kInverted = true;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final MotorType kMotorType = MotorType.kBrushless;
     }
 
     public static final class FollowerMotor {
-        public static final int kCanId = 12;
-        public static final boolean kInverted = true;
+        public static final int kCanId = 16;
+        public static final boolean kInverted = false;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final MotorType kMotorType = MotorType.kBrushless;
     }
 
     public static final class LimitSwitch {
-        public static final int kPort = 9;
+        public static final int kPort = 10;
     }
 
     public static final class Outputs {
