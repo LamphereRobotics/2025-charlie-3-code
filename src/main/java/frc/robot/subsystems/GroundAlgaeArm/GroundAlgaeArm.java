@@ -16,36 +16,35 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.GroundAlgaeConstants;
 import frc.robot.Constants.Units;
 
 public class GroundAlgaeArm extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(GroundAlgaeConstants.ArmMotor.kCanId,
-      GroundAlgaeConstants.ArmMotor.kMotorType);
+  private final SparkMax motor = new SparkMax(GroundAlgaeArmConstants.ArmMotor.kCanId,
+      GroundAlgaeArmConstants.ArmMotor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
 
   public GroundAlgaeArm() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
 
     motorConfig
-        .inverted(GroundAlgaeConstants.ArmMotor.kInverted)
-        .idleMode(GroundAlgaeConstants.ArmMotor.kIdleMode)
-        .openLoopRampRate(GroundAlgaeConstants.Constraints.kRampRate);
+        .inverted(GroundAlgaeArmConstants.ArmMotor.kInverted)
+        .idleMode(GroundAlgaeArmConstants.ArmMotor.kIdleMode)
+        .openLoopRampRate(GroundAlgaeArmConstants.Constraints.kRampRate);
 
     motorConfig.encoder
-        .positionConversionFactor(GroundAlgaeConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
+        .positionConversionFactor(GroundAlgaeArmConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
         .velocityConversionFactor(
-            GroundAlgaeConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
+            GroundAlgaeArmConstants.Encoder.kVelocityConversion.in(Units.kAngularVelocityUnit));
 
     motorConfig.softLimit
-        .forwardSoftLimitEnabled(GroundAlgaeConstants.Positions.kForwardSoftLimitEnabled)
-        .forwardSoftLimit(GroundAlgaeConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
-        .reverseSoftLimitEnabled(GroundAlgaeConstants.Positions.kReverseSoftLimitEnabled)
-        .reverseSoftLimit(GroundAlgaeConstants.Positions.kMinPosition.in(Units.kAngleUnit));
+        .forwardSoftLimitEnabled(GroundAlgaeArmConstants.Positions.kForwardSoftLimitEnabled)
+        .forwardSoftLimit(GroundAlgaeArmConstants.Positions.kMaxPosition.in(Units.kAngleUnit))
+        .reverseSoftLimitEnabled(GroundAlgaeArmConstants.Positions.kReverseSoftLimitEnabled)
+        .reverseSoftLimit(GroundAlgaeArmConstants.Positions.kMinPosition.in(Units.kAngleUnit));
 
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    encoder.setPosition(GroundAlgaeConstants.Positions.kStartPosition.in(Units.kAngleUnit));
+    encoder.setPosition(GroundAlgaeArmConstants.Positions.kStartPosition.in(Units.kAngleUnit));
   }
 
   @Override
@@ -80,11 +79,11 @@ public class GroundAlgaeArm extends SubsystemBase {
   }
 
   public void up() {
-    this.setVoltage(GroundAlgaeConstants.Outputs.kArmUp);
+    this.setVoltage(GroundAlgaeArmConstants.Outputs.kArmUp);
   }
 
   public void down() {
-    this.setVoltage(GroundAlgaeConstants.Outputs.kArmDown);
+    this.setVoltage(GroundAlgaeArmConstants.Outputs.kArmDown);
   }
 
   public void stop() {
