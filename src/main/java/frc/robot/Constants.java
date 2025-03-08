@@ -154,7 +154,6 @@ public final class Constants {
       public static final Distance kL2 = Feet.of(2).plus(Inches.of(7.875));
       public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
       public static final Distance kL4 = Feet.of(6);
-      public static final Distance kL4Launch = Feet.of(5).plus(Inches.of(10));
 
       public static final Distance kMinPosition = Inches.of(25.625);
       public static final Distance kMaxPosition = Inches.of(71);
@@ -251,31 +250,8 @@ public final class Constants {
     }
   }
 
-  public static final class CoralIntakeConstants {
-    public static final class Motor {
-      public static final int kCanId = 13;
-      public static final boolean kInverted = false;
-      public static final IdleMode kIdleMode = IdleMode.kBrake;
-      public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class LimitSwitch {
-      public static final int kPort = 2;
-    }
-
-    public static final class Outputs {
-      public static final Voltage kOut = Volts.of(12);
-      public static final Voltage kIn = Volts.of(4);
-      public static final Voltage kIn2 = Volts.of(2);
-      public static final Voltage kHold = Volts.of(-0.85);
-    }
-
-    public static final class Timing {
-      public static final Time kScoreDelay = Seconds.of(0.5);
-    }
+  public static final class AutoConstants {
   }
-
-  public static final class AutoConstants {}
 
   public static final class LimelightConstants {
     public static final boolean kUseMegaTag2 = true;
