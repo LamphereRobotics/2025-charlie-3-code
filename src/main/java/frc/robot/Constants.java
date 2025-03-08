@@ -9,6 +9,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.AngularAccelerationUnit;
@@ -37,6 +39,7 @@ import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -51,10 +54,16 @@ import edu.wpi.first.wpilibj.XboxController;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final class FieldConstants {
+    public static final Distance kStartingLine = Inches.of(298.5);
+  }
+
   public static final class DriveConstants {
     public static final double kMaxSpeedMetersPerSecond = 4.2;
 
     public static final class Positions {
+      public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5), Rotation2d.kZero);
+
       public static final Angle kLeftIntakeHeading = Degrees.of(306);
       public static final Angle kRightIntakeHeading = Degrees.of(54);
       public static final Angle kProcessorHeading = Degrees.of(90);

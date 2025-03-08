@@ -7,9 +7,7 @@ package frc.robot;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import static edu.wpi.first.units.Units.Degrees;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,10 +29,8 @@ import frc.robot.subsystems.Elevator;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-	// The robot's subsystems
-	private final Pose2d m_startingPosition = new Pose2d(0, 0, new Rotation2d(Degrees.of(180)));
 	private final Drive m_drive = new Drive(new File(Filesystem.getDeployDirectory(),
-			"swerve"), m_startingPosition);
+			"swerve"), DriveConstants.Positions.kStartingPose);
 	private final Elevator m_elevator = new Elevator();
 	private final AlgaeArm m_algaeArm = new AlgaeArm();
 	private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
@@ -53,7 +49,8 @@ public class RobotContainer {
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
 		m_autonomousChooser.setDefaultOption("go back",
 				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> -1).until(
-						() -> m_drive.getPose().getTranslation().getDistance(m_startingPosition.getTranslation()) > 1));
+						() -> m_drive.getPose().getTranslation()
+								.getDistance(DriveConstants.Positions.kStartingPose.getTranslation()) > 1));
 		SmartDashboard.putData(m_autonomousChooser);
 
 		configureButtonBindings();
