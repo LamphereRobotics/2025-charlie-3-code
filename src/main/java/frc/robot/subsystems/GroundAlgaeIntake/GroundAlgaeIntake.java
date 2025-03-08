@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems.GroundAlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,7 +21,14 @@ public class GroundAlgaeIntake extends SubsystemBase {
       GroundAlgaeIntakeConstants.Motor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeIntakeConstants.LimitSwitch.kPort);
 
-    public GroundAlgaeIntake() {
+  public GroundAlgaeIntake() {
+    SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+    motorConfig
+      .inverted(GroundAlgaeIntakeConstants.Motor.kInverted)
+      .idleMode(GroundAlgaeIntakeConstants.Motor.kIdleMode);
+
+    motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems.UpperAlgaeIntake;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,13 +23,30 @@ public class UpperAlgaeIntake extends SubsystemBase {
       UpperAlgaeIntakeConstants.LeaderMotor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(UpperAlgaeIntakeConstants.LimitSwitch.kPort);
 
-    public UpperAlgaeIntake() {
+  public UpperAlgaeIntake() {
+    SparkMaxConfig leaderMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig followerMotorConfig = new SparkMaxConfig();
+
+    leaderMotorConfig
+      .inverted(UpperAlgaeIntakeConstants.LeaderMotor.kInverted)
+      .idleMode(UpperAlgaeIntakeConstants.LeaderMotor.kIdleMode);
+
+    followerMotorConfig
+        .inverted(UpperAlgaeIntakeConstants.FollowerMotor.kInverted)
+        .idleMode(UpperAlgaeIntakeConstants.FollowerMotor.kIdleMode)
+        .follow(leaderMotor, UpperAlgaeIntakeConstants.FollowerMotor.kInverted);
+
+    leaderMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    followerMotor.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("UpperAlgae/Intake/hasAlgae", this.hasAlgae());
-    SmartDashboard.putNumber("UpperAlgae/Intake/voltage", leaderMotor.getAppliedOutput() * leaderMotor.getBusVoltage());
+    SmartDashboard.putNumber("UpperAlgae/Intake/leader/voltage",
+        leaderMotor.getAppliedOutput() * leaderMotor.getBusVoltage());
+    SmartDashboard.putNumber("UpperAlgae/Intake/follower/voltage",
+        followerMotor.getAppliedOutput() * followerMotor.getBusVoltage());
   }
 
   public boolean hasAlgae() {
