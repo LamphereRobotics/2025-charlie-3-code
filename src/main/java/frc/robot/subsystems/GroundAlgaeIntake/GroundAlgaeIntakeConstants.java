@@ -10,7 +10,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Voltage;
 
-/** Add your docs here. */
 public class GroundAlgaeIntakeConstants {
     public static final class Motor {
         public static final int kCanId = 12;

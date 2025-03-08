@@ -16,7 +16,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
 
-/** Add your docs here. */
 public class UpperAlgaeArmConstants {
     public static final class ArmMotor {
         public static final int kCanId = 11;

@@ -18,8 +18,7 @@ public class GroundAlgaeIntake extends SubsystemBase {
       GroundAlgaeIntakeConstants.Motor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeIntakeConstants.LimitSwitch.kPort);
 
-  /** Creates a new AlgaeIntake. */
-  public GroundAlgaeIntake() {
+    public GroundAlgaeIntake() {
   }
 
   @Override

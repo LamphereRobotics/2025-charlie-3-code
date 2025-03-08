@@ -20,8 +20,7 @@ public class UpperAlgaeIntake extends SubsystemBase {
       UpperAlgaeIntakeConstants.LeaderMotor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(UpperAlgaeIntakeConstants.LimitSwitch.kPort);
 
-  /** Creates a new AlgaeIntake. */
-  public UpperAlgaeIntake() {
+    public UpperAlgaeIntake() {
   }
 
   @Override
