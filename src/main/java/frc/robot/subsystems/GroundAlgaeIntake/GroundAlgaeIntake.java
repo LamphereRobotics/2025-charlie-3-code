@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.GroundAlgaeConstants;
 import frc.robot.Constants.Units;
 
 public class GroundAlgaeIntake extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(GroundAlgaeConstants.IntakeMotor.kCanId,
-      GroundAlgaeConstants.IntakeMotor.kMotorType);
-  private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeConstants.LimitSwitch.kPort);
+  private final SparkMax motor = new SparkMax(GroundAlgaeIntakeConstants.IntakeMotor.kCanId,
+      GroundAlgaeIntakeConstants.IntakeMotor.kMotorType);
+  private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeIntakeConstants.LimitSwitch.kPort);
 
   /** Creates a new AlgaeIntake. */
   public GroundAlgaeIntake() {
@@ -38,17 +37,17 @@ public class GroundAlgaeIntake extends SubsystemBase {
   }
 
   public Command inCommand() {
-    return setVoltageCommand(GroundAlgaeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
+    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
   }
 
   public Command outCommand() {
-    return setVoltageCommand(GroundAlgaeConstants.Outputs.kIntakeOut);
+    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kIntakeOut);
   }
 
   public Command idleCommand() {
     return run(() -> {
       if (this.hasAlgae()) {
-        this.setVoltage(GroundAlgaeConstants.Outputs.kHold);
+        this.setVoltage(GroundAlgaeIntakeConstants.Outputs.kHold);
       } else {
         this.stop();
       }
