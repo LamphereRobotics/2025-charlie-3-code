@@ -36,10 +36,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -182,56 +180,6 @@ public final class Constants {
     public static final DistanceUnit kDistanceUnit = Inches;
     public static final LinearVelocityUnit kLinearVelocityUnit = kDistanceUnit.per(kTimeUnit);
     public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
-  }
-
-  public static final class GroundAlgaeConstants {
-    public static final class ArmMotor {
-      public static final int kCanId = 11;
-      public static final boolean kInverted = false;
-      public static final IdleMode kIdleMode = IdleMode.kBrake;
-      public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class IntakeMotor {
-      public static final int kCanId = 12;
-      public static final boolean kInverted = true;
-      public static final IdleMode kIdleMode = IdleMode.kBrake;
-      public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class Encoder {
-      public static final Angle kPositionConversion = Degrees.of(17.340);
-      public static final AngularVelocity kVelocityConversion = DegreesPerSecond.of(0.0289);
-    }
-
-    public static final class LimitSwitch {
-      public static final int kPort = 9;
-    }
-
-    public static final class Constraints {
-      public static final double kRampRate = 0.25;
-    }
-
-    public static final class Positions {
-      public static final Angle kPickup = Degrees.of(40);
-      public static final Angle kHold = Degrees.of(90);
-      public static final Angle kScore = Degrees.of(90);
-
-      public static final Angle kMinPosition = Degrees.of(35);
-      public static final Angle kMaxPosition = Degrees.of(95);
-      public static final Angle kStartPosition = Degrees.of(122);
-
-      public static final boolean kForwardSoftLimitEnabled = true;
-      public static final boolean kReverseSoftLimitEnabled = true;
-    }
-
-    public static final class Outputs {
-      public static final Voltage kArmUp = Volts.of(2);
-      public static final Voltage kArmDown = Volts.of(-2);
-      public static final Voltage kIntakeIn = Volts.of(-12);
-      public static final Voltage kIntakeOut = Volts.of(12);
-      public static final Voltage kHold = Volts.of(-1);
-    }
   }
 
   public static final class UpperAlgaeConstants {
