@@ -11,15 +11,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.UpperAlgaeConstants;
 import frc.robot.Constants.Units;
 
 public class UpperAlgaeIntake extends SubsystemBase {
-  private final SparkMax leaderMotor = new SparkMax(UpperAlgaeConstants.IntakeMotor.kCanId,
-      UpperAlgaeConstants.IntakeMotor.kMotorType);
-  private final SparkMax followerMotor = new SparkMax(UpperAlgaeConstants.IntakeMotor.kCanId,
-      UpperAlgaeConstants.IntakeMotor.kMotorType);
-  private final DigitalInput limitSwitch = new DigitalInput(UpperAlgaeConstants.LimitSwitch.kPort);
+  private final SparkMax leaderMotor = new SparkMax(UpperAlgaeIntakeConstants.LeaderMotor.kCanId,
+      UpperAlgaeIntakeConstants.LeaderMotor.kMotorType);
+  private final SparkMax followerMotor = new SparkMax(UpperAlgaeIntakeConstants.LeaderMotor.kCanId,
+      UpperAlgaeIntakeConstants.LeaderMotor.kMotorType);
+  private final DigitalInput limitSwitch = new DigitalInput(UpperAlgaeIntakeConstants.LimitSwitch.kPort);
 
   /** Creates a new AlgaeIntake. */
   public UpperAlgaeIntake() {
@@ -40,17 +39,17 @@ public class UpperAlgaeIntake extends SubsystemBase {
   }
 
   public Command inCommand() {
-    return setVoltageCommand(UpperAlgaeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
+    return setVoltageCommand(UpperAlgaeIntakeConstants.Outputs.kIn).until(this::hasAlgae);
   }
 
   public Command outCommand() {
-    return setVoltageCommand(UpperAlgaeConstants.Outputs.kIntakeOut);
+    return setVoltageCommand(UpperAlgaeIntakeConstants.Outputs.kOut);
   }
 
   public Command idleCommand() {
     return run(() -> {
       if (this.hasAlgae()) {
-        this.setVoltage(UpperAlgaeConstants.Outputs.kHold);
+        this.setVoltage(UpperAlgaeIntakeConstants.Outputs.kHold);
       } else {
         this.stop();
       }
