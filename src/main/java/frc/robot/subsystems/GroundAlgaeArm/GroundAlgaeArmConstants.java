@@ -13,16 +13,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
 public final class GroundAlgaeArmConstants {
-    public static final class ArmMotor {
+    public static final class Motor {
         public static final int kCanId = 11;
         public static final boolean kInverted = false;
-        public static final IdleMode kIdleMode = IdleMode.kBrake;
-        public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class IntakeMotor {
-        public static final int kCanId = 12;
-        public static final boolean kInverted = true;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final MotorType kMotorType = MotorType.kBrushless;
     }
@@ -30,14 +23,6 @@ public final class GroundAlgaeArmConstants {
     public static final class Encoder {
         public static final Angle kPositionConversion = Degrees.of(17.340);
         public static final AngularVelocity kVelocityConversion = DegreesPerSecond.of(0.0289);
-    }
-
-    public static final class LimitSwitch {
-        public static final int kPort = 9;
-    }
-
-    public static final class Constraints {
-        public static final double kRampRate = 0.25;
     }
 
     public static final class Positions {
@@ -54,10 +39,9 @@ public final class GroundAlgaeArmConstants {
     }
 
     public static final class Outputs {
-        public static final Voltage kArmUp = Volts.of(2);
-        public static final Voltage kArmDown = Volts.of(-2);
-        public static final Voltage kIntakeIn = Volts.of(-12);
-        public static final Voltage kIntakeOut = Volts.of(12);
-        public static final Voltage kHold = Volts.of(-1);
+        public static final double kRampRate = 0.25;
+
+        public static final Voltage kUp = Volts.of(2);
+        public static final Voltage kDown = Volts.of(-2);
     }
 }

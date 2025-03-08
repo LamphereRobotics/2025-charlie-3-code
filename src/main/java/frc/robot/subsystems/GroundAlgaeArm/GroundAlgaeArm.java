@@ -19,17 +19,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Units;
 
 public class GroundAlgaeArm extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(GroundAlgaeArmConstants.ArmMotor.kCanId,
-      GroundAlgaeArmConstants.ArmMotor.kMotorType);
+  private final SparkMax motor = new SparkMax(GroundAlgaeArmConstants.Motor.kCanId,
+      GroundAlgaeArmConstants.Motor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
 
   public GroundAlgaeArm() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
 
     motorConfig
-        .inverted(GroundAlgaeArmConstants.ArmMotor.kInverted)
-        .idleMode(GroundAlgaeArmConstants.ArmMotor.kIdleMode)
-        .openLoopRampRate(GroundAlgaeArmConstants.Constraints.kRampRate);
+        .inverted(GroundAlgaeArmConstants.Motor.kInverted)
+        .idleMode(GroundAlgaeArmConstants.Motor.kIdleMode)
+        .openLoopRampRate(GroundAlgaeArmConstants.Outputs.kRampRate);
 
     motorConfig.encoder
         .positionConversionFactor(GroundAlgaeArmConstants.Encoder.kPositionConversion.in(Units.kAngleUnit))
@@ -79,11 +79,11 @@ public class GroundAlgaeArm extends SubsystemBase {
   }
 
   public void up() {
-    this.setVoltage(GroundAlgaeArmConstants.Outputs.kArmUp);
+    this.setVoltage(GroundAlgaeArmConstants.Outputs.kUp);
   }
 
   public void down() {
-    this.setVoltage(GroundAlgaeArmConstants.Outputs.kArmDown);
+    this.setVoltage(GroundAlgaeArmConstants.Outputs.kDown);
   }
 
   public void stop() {
