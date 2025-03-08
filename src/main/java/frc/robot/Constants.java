@@ -208,32 +208,7 @@ public final class Constants {
       public static final int kPort = 9;
     }
 
-    public static final class Feedforward {
-      public static final Voltage kS = Volts.of(1.1);
-      public static final Voltage kG = Volts.of(0.0);
-      public static final double kV = 0.00816;
-    }
-
-    public static final class PID {
-      // Coefficients
-      public static final Per<VoltageUnit, AngleUnit> kP = Volts.per(Degrees).ofNative(0.05);
-      // TODO: Convert to unit type
-      // Unit is volts / (degree * second)
-      public static final double kI = 0.0;
-      // TODO: Convert to unit type
-      // Unit is volts / degree / second
-      public static final double kD = 0.0;
-
-      // Extra config
-      public static final Angle kPositionTolerance = Degrees.of(5);
-      public static final AngularVelocity kVelocityTolerance = DegreesPerSecond.of(2);
-      public static final Angle kIZone = Degrees.of(0);
-      public static final Voltage kIntegratorRange = Volts.of(0);
-    }
-
     public static final class Constraints {
-      public static final AngularVelocity kVelocity = DegreesPerSecond.of(232);
-      public static final AngularAcceleration kAcceleration = DegreesPerSecond.per(Second).of(928);
       public static final double kRampRate = 0.25;
     }
 
