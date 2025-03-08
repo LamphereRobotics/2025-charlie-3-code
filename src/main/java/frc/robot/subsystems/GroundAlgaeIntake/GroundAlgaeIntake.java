@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Units;
 
 public class GroundAlgaeIntake extends SubsystemBase {
-  private final SparkMax motor = new SparkMax(GroundAlgaeIntakeConstants.IntakeMotor.kCanId,
-      GroundAlgaeIntakeConstants.IntakeMotor.kMotorType);
+  private final SparkMax motor = new SparkMax(GroundAlgaeIntakeConstants.Motor.kCanId,
+      GroundAlgaeIntakeConstants.Motor.kMotorType);
   private final DigitalInput limitSwitch = new DigitalInput(GroundAlgaeIntakeConstants.LimitSwitch.kPort);
 
   /** Creates a new AlgaeIntake. */
@@ -37,11 +37,11 @@ public class GroundAlgaeIntake extends SubsystemBase {
   }
 
   public Command inCommand() {
-    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kIntakeIn).until(this::hasAlgae);
+    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kIn).until(this::hasAlgae);
   }
 
   public Command outCommand() {
-    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kIntakeOut);
+    return setVoltageCommand(GroundAlgaeIntakeConstants.Outputs.kOut);
   }
 
   public Command idleCommand() {
