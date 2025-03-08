@@ -453,7 +453,6 @@ public class Drive extends SubsystemBase {
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, Supplier<Rotation2d> heading) {
     swerveDrive.setHeadingCorrection(true);
     return run(() -> {
-      System.out.println("doin the lock");
       swerveDrive.swerveController.lastAngleScalar = heading.get().getRadians();
       // Make the robot move
       driveFieldOriented(this.getTargetSpeeds(translationX.getAsDouble(), translationY.getAsDouble(), heading.get()));
