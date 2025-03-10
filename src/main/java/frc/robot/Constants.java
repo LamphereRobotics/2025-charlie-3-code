@@ -18,6 +18,7 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearAccelerationUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.VoltageUnit;
@@ -50,7 +51,8 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.2;
 
     public static final class Positions {
-      public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5), Rotation2d.kZero);
+      public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5),
+          Rotation2d.kZero);
 
       public static final Angle kLeftIntakeHeading = Degrees.of(306);
       public static final Angle kRightIntakeHeading = Degrees.of(54);
@@ -190,5 +192,7 @@ public final class Constants {
     public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
     public static final AngularVelocityUnit kAngularVelocityUnit = kAngleUnit.per(kTimeUnit);
     public static final AngularAccelerationUnit kAngularAccelerationUnit = kAngularVelocityUnit.per(kTimeUnit);
+    public static final PerUnit<AngularVelocityUnit, VoltageUnit> kAngularKVUnit = kAngularVelocityUnit
+        .per(kVoltageUnit);
   }
 }
