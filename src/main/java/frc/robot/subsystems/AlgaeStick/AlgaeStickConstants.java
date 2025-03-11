@@ -31,7 +31,7 @@ public final class AlgaeStickConstants {
 
         public static final Angle kMinPosition = Degrees.of(-5);
         public static final Angle kMaxPosition = Degrees.of(95);
-        public static final Angle kStartPosition = Degrees.of(210);
+        public static final Angle kStartPosition = Degrees.of(223);
 
         public static final boolean kForwardSoftLimitEnabled = true;
         public static final boolean kReverseSoftLimitEnabled = true;
@@ -40,9 +40,9 @@ public final class AlgaeStickConstants {
     public static final class Outputs {
         public static final double kRampRate = 0.25;
 
-        public static final Voltage kUp = Volts.of(2);
+        public static final Voltage kUp = Volts.of(4);
         public static final Voltage kDown = Volts.of(-2);
-        public static final Voltage kHold = Volts.of(0.2);
+        public static final Voltage kHold = Volts.of(0.1);
         public static final Voltage kRemove = Volts.of(4);
     }
 }
