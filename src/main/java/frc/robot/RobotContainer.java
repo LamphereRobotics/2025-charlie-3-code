@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,6 +23,7 @@ import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
 import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.AlgaeStick.AlgaeStick;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,6 +37,7 @@ public class RobotContainer {
 	private final Elevator m_elevator = new Elevator();
 	private final GroundAlgaeArm m_algaeArm = new GroundAlgaeArm();
 	private final GroundAlgaeIntake m_algaeIntake = new GroundAlgaeIntake();
+	private final AlgaeStick algaeStick = new AlgaeStick();
 
 	// The driver's controller
 	private final CommandXboxController m_driverController = new CommandXboxController(
@@ -55,20 +59,11 @@ public class RobotContainer {
 
 		configureButtonBindings();
 
-		m_drive.setDefaultCommand(driveFieldOrientedDirectAngle());
+		m_drive.setDefaultCommand(driveFieldOrientedInverseDirectAngle());
 		m_elevator.setDefaultCommand(m_elevator.idleCommand());
 		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
 		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
-	}
-
-	private Command driveFieldOrientedDirectAngle() {
-		return m_drive.driveCommand(
-				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
-						OIConstants.kDeadband),
-				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
-						OIConstants.kTranslationY), OIConstants.kDeadband),
-				() -> -m_driverController.getRawAxis(OIConstants.kHeadingX),
-				() -> -m_driverController.getRawAxis(OIConstants.kHeadingY));
+		algaeStick.setDefaultCommand(algaeStick.upCommand());
 	}
 
 	private Command driveFieldOrientedInverseDirectAngle() {
@@ -108,16 +103,19 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
+		m_operatorsStick.button(10).whileTrue(algaeStick.downCommand()
+				.until(() -> algaeStick.getPosition().lte(Degrees.zero())).andThen(algaeStick.holdCommand()));
+		m_operatorsStick.button(9).whileTrue(algaeStick.removeCommand());
 
-		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro));
-		m_driverController.button(OIConstants.kIntakeLeft)
-				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
-		m_driverController.button(OIConstants.kIntakeRight)
-				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
-		m_driverController.leftTrigger()
+		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro180));
+		// m_driverController.button(OIConstants.kIntakeLeft)
+		// .whileTrue(lockToHeading(new
+		// Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
+		// m_driverController.button(OIConstants.kIntakeRight)
+		// .whileTrue(lockToHeading(new
+		// Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
+		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
-		m_driverController.rightTrigger().whileTrue(driveFieldOrientedInverseDirectAngle());
-
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
 		// m_driverController.button(OIConstants.kRobotRelative).onTrue(m_robotDrive.setFieldRelativeCommand(false))

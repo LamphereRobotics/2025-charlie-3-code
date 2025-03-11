@@ -38,7 +38,7 @@ public class GroundAlgaeIntake extends SubsystemBase {
   }
 
   public boolean hasAlgae() {
-    return limitSwitch.get();
+    return !limitSwitch.get();
   }
 
   public boolean noAlgae() {

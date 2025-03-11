@@ -13,18 +13,18 @@ import edu.wpi.first.units.measure.Voltage;
 public class GroundAlgaeIntakeConstants {
     public static final class Motor {
         public static final int kCanId = 12;
-        public static final boolean kInverted = true;
+        public static final boolean kInverted = false;
         public static final IdleMode kIdleMode = IdleMode.kBrake;
         public static final MotorType kMotorType = MotorType.kBrushless;
     }
 
     public static final class LimitSwitch {
-        public static final int kPort = 9;
+        public static final int kPort = 2;
     }
 
     public static final class Outputs {
         public static final Voltage kIn = Volts.of(-12);
         public static final Voltage kOut = Volts.of(12);
-        public static final Voltage kHold = Volts.of(-1);
+        public static final Voltage kHold = Volts.of(-0.2);
     }
 }

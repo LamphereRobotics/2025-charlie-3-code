@@ -28,6 +28,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -577,6 +578,16 @@ public class Drive extends SubsystemBase {
   }
 
   /**
+   * Resets the gyro angle to zero and resets odometry to the same position, but
+   * facing toward 180.
+   */
+  public void zeroGyro180() {
+    zeroGyro();
+    // Set the pose 180 degrees
+    resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+  }
+
+  /**
    * Checks if the alliance is red, defaults to false if alliance isn't available.
    *
    * @return true if the red alliance, false if blue. Defaults to false if none is
@@ -595,6 +606,22 @@ public class Drive extends SubsystemBase {
    */
   public void zeroGyroWithAlliance() {
     if (isRedAlliance()) {
+      zeroGyro();
+      // Set the pose 180 degrees
+      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+    } else {
+      zeroGyro();
+    }
+  }
+
+  /**
+   * This will zero (calibrate) the robot to assume the current position is facing
+   * backwards
+   * <p>
+   * If blue alliance rotate the robot 180 after the drviebase zero command
+   */
+  public void zeroGyro180WithAlliance() {
+    if (!isRedAlliance()) {
       zeroGyro();
       // Set the pose 180 degrees
       resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));

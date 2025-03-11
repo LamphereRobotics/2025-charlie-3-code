@@ -110,26 +110,26 @@ public final class Constants {
 
     public static final class Encoder {
       public static final boolean kInverted = false;
-      public static final Distance kPositionConversion = Inches.of(1.077);
-      public static final LinearVelocity kVelocityConversion = InchesPerSecond.of(0.018);
+      public static final Distance kPositionConversion = Inches.of(0.2154);
+      public static final LinearVelocity kVelocityConversion = kPositionConversion.per(Minute);
     }
 
     public static final class Feedforward {
-      public static final Voltage kS = Volts.of(0.12);
-      public static final Voltage kG = Volts.of(0.3);
-      public static final double kV = 0.117;
+      public static final Voltage kS = Volts.of(0.024);
+      public static final Voltage kG = Volts.of(0.06);
+      public static final double kV = 0.585;
     }
 
     public static final class PID {
       // Coefficients
       // Unit is volts / inch
-      public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0.3);
+      public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(1.5);
       // TODO: Convert to unit type
       // Unit is volts / (inch * second)
       public static final double kI = 0;
       // TODO: Convert to unit type
       // Unit is volts / inch / second
-      public static final double kD = 0.03;
+      public static final double kD = 0.15;
 
       // Extra config
       public static final Distance kPositionTolerance = Inches.of(1);
@@ -139,8 +139,8 @@ public final class Constants {
     }
 
     public static final class Constraints {
-      public static final LinearVelocity kVelocity = InchesPerSecond.of(48);
-      public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(122);
+      public static final LinearVelocity kVelocity = InchesPerSecond.of(9.6);
+      public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(24.4);
       public static final double kRampRate = 0.25;
     }
 
