@@ -10,8 +10,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
 public final class AlgaeStickConstants {
@@ -46,8 +44,6 @@ public final class AlgaeStickConstants {
         public static final Angle kMaxPosition = Degrees.of(95);
         public static final Angle kStartPosition = Degrees.of(223);
 
-        public static final Angle kToleranceClose = Degrees.of(2);
-        public static final Angle kToleranceFar = Degrees.of(15);
         public static final boolean kForwardSoftLimitEnabled = true;
         public static final boolean kReverseSoftLimitEnabled = true;
     }
@@ -57,7 +53,5 @@ public final class AlgaeStickConstants {
 
         public static final Voltage kUp = Volts.of(4);
         public static final Voltage kDown = Volts.of(-2);
-        public static final Voltage kMoveFar = Volts.of(4);
-        public static final Voltage kMoveClose = Volts.of(0.5);
     }
 }
