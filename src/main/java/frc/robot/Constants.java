@@ -154,8 +154,8 @@ public final class Constants {
       public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
       public static final Distance kL4 = Feet.of(6);
 
-      public static final Distance kMinPosition = Inches.of(25.625);
-      public static final Distance kMaxPosition = Inches.of(71);
+      public static final Distance kMinPosition = Inches.of(7.5);
+      public static final Distance kMaxPosition = Inches.of(47.5);
       public static final Distance kStartPosition = kMinPosition;
 
       public static final boolean kForwardSoftLimitEnabled = true;
