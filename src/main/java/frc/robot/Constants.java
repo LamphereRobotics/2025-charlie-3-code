@@ -74,7 +74,7 @@ public final class Constants {
     public static final int kRotation = XboxController.Axis.kRightX.value;
 
     // Driver buttons
-    public static final int kZeroGyro = XboxController.Button.kA.value;
+    public static final int kZeroGyro = XboxController.Button.kBack.value;
     public static final int kSlowMode = XboxController.Axis.kLeftTrigger.value;
     public static final int kRobotRelative = XboxController.Button.kRightBumper.value;
     public static final int kIntakeLeft = XboxController.Button.kLeftBumper.value;

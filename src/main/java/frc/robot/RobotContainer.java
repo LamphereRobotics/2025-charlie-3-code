@@ -8,6 +8,7 @@ import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -114,10 +115,12 @@ public class RobotContainer {
 		// TODO: create robot relative control
 		// m_driverController.button(OIConstants.kRobotRelative).onTrue(m_robotDrive.setFieldRelativeCommand(false))
 		// .onFalse(m_robotDrive.setFieldRelativeCommand(true));
-		m_driverController.rightBumper().whileTrue(m_algaeIntake.outCommand());
-		m_driverController.leftBumper().whileTrue(pickupAlgae());
-		m_driverController.y().whileTrue(m_elevator.upCommand());
-		m_driverController.a().whileTrue(m_elevator.downCommand());
+
+		m_driverController.rightBumper().and(DriverStation::isTest).whileTrue(m_algaeIntake.outCommand());
+		m_driverController.leftBumper().and(DriverStation::isTest).whileTrue(pickupAlgae());
+		m_driverController.y().and(DriverStation::isTest).whileTrue(m_elevator.upCommand());
+		m_driverController.a().and(DriverStation::isTest).whileTrue(m_elevator.downCommand());
+		m_driverController.leftTrigger().and(DriverStation::isTest).whileTrue(algaeStick.lowCommand());
 	}
 
 	/**
