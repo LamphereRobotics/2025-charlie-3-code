@@ -18,28 +18,17 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearAccelerationUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.TimeUnit;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Inch;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -62,7 +51,8 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.2;
 
     public static final class Positions {
-      public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5), Rotation2d.kZero);
+      public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5),
+          Rotation2d.kZero);
 
       public static final Angle kLeftIntakeHeading = Degrees.of(306);
       public static final Angle kRightIntakeHeading = Degrees.of(54);
@@ -84,7 +74,7 @@ public final class Constants {
     public static final int kRotation = XboxController.Axis.kRightX.value;
 
     // Driver buttons
-    public static final int kZeroGyro = XboxController.Button.kA.value;
+    public static final int kZeroGyro = XboxController.Button.kBack.value;
     public static final int kSlowMode = XboxController.Axis.kLeftTrigger.value;
     public static final int kRobotRelative = XboxController.Button.kRightBumper.value;
     public static final int kIntakeLeft = XboxController.Button.kLeftBumper.value;
@@ -120,26 +110,26 @@ public final class Constants {
 
     public static final class Encoder {
       public static final boolean kInverted = false;
-      public static final Distance kPositionConversion = Inches.of(1.077);
-      public static final LinearVelocity kVelocityConversion = InchesPerSecond.of(0.018);
+      public static final Distance kPositionConversion = Inches.of(0.2154);
+      public static final LinearVelocity kVelocityConversion = kPositionConversion.per(Minute);
     }
 
     public static final class Feedforward {
-      public static final Voltage kS = Volts.of(0.12);
-      public static final Voltage kG = Volts.of(0.3);
-      public static final double kV = 0.117;
+      public static final Voltage kS = Volts.of(0.024);
+      public static final Voltage kG = Volts.of(0.06);
+      public static final double kV = 0.585;
     }
 
     public static final class PID {
       // Coefficients
       // Unit is volts / inch
-      public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(0.3);
+      public static final Per<VoltageUnit, DistanceUnit> kP = Volts.per(Inch).ofNative(1.5);
       // TODO: Convert to unit type
       // Unit is volts / (inch * second)
       public static final double kI = 0;
       // TODO: Convert to unit type
       // Unit is volts / inch / second
-      public static final double kD = 0.03;
+      public static final double kD = 0.15;
 
       // Extra config
       public static final Distance kPositionTolerance = Inches.of(1);
@@ -149,8 +139,8 @@ public final class Constants {
     }
 
     public static final class Constraints {
-      public static final LinearVelocity kVelocity = InchesPerSecond.of(48);
-      public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(122);
+      public static final LinearVelocity kVelocity = InchesPerSecond.of(9.6);
+      public static final LinearAcceleration kAcceleration = InchesPerSecond.per(Second).of(24.4);
       public static final double kRampRate = 0.25;
     }
 
@@ -164,8 +154,8 @@ public final class Constants {
       public static final Distance kL3 = Feet.of(3).plus(Inches.of(11.625));
       public static final Distance kL4 = Feet.of(6);
 
-      public static final Distance kMinPosition = Inches.of(25.625);
-      public static final Distance kMaxPosition = Inches.of(71);
+      public static final Distance kMinPosition = Inches.of(7.5);
+      public static final Distance kMaxPosition = Inches.of(40);
       public static final Distance kStartPosition = kMinPosition;
 
       public static final boolean kForwardSoftLimitEnabled = true;
@@ -173,8 +163,8 @@ public final class Constants {
     }
 
     public static final class Outputs {
-      public static final Voltage kUp = Volts.of(6);
-      public static final Voltage kDown = Volts.of(-2);
+      public static final Voltage kUp = Volts.of(12);
+      public static final Voltage kDown = Volts.of(-4);
     }
 
     public static final TimeUnit kTimeUnit = Seconds;
@@ -182,81 +172,6 @@ public final class Constants {
     public static final DistanceUnit kDistanceUnit = Inches;
     public static final LinearVelocityUnit kLinearVelocityUnit = kDistanceUnit.per(kTimeUnit);
     public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
-  }
-
-  public static final class AlgaeConstants {
-    public static final class ArmMotor {
-      public static final int kCanId = 11;
-      public static final boolean kInverted = false;
-      public static final IdleMode kIdleMode = IdleMode.kBrake;
-      public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class IntakeMotor {
-      public static final int kCanId = 12;
-      public static final boolean kInverted = true;
-      public static final IdleMode kIdleMode = IdleMode.kBrake;
-      public static final MotorType kMotorType = MotorType.kBrushless;
-    }
-
-    public static final class Encoder {
-      public static final Angle kPositionConversion = Degrees.of(17.340);
-      public static final AngularVelocity kVelocityConversion = DegreesPerSecond.of(0.0289);
-    }
-
-    public static final class LimitSwitch {
-      public static final int kPort = 9;
-    }
-
-    public static final class Feedforward {
-      public static final Voltage kS = Volts.of(1.1);
-      public static final Voltage kG = Volts.of(0.0);
-      public static final double kV = 0.00816;
-    }
-
-    public static final class PID {
-      // Coefficients
-      public static final Per<VoltageUnit, AngleUnit> kP = Volts.per(Degrees).ofNative(0.05);
-      // TODO: Convert to unit type
-      // Unit is volts / (degree * second)
-      public static final double kI = 0.0;
-      // TODO: Convert to unit type
-      // Unit is volts / degree / second
-      public static final double kD = 0.0;
-
-      // Extra config
-      public static final Angle kPositionTolerance = Degrees.of(5);
-      public static final AngularVelocity kVelocityTolerance = DegreesPerSecond.of(2);
-      public static final Angle kIZone = Degrees.of(0);
-      public static final Voltage kIntegratorRange = Volts.of(0);
-    }
-
-    public static final class Constraints {
-      public static final AngularVelocity kVelocity = DegreesPerSecond.of(232);
-      public static final AngularAcceleration kAcceleration = DegreesPerSecond.per(Second).of(928);
-      public static final double kRampRate = 0.25;
-    }
-
-    public static final class Positions {
-      public static final Angle kPickup = Degrees.of(40);
-      public static final Angle kHold = Degrees.of(90);
-      public static final Angle kScore = Degrees.of(90);
-
-      public static final Angle kMinPosition = Degrees.of(35);
-      public static final Angle kMaxPosition = Degrees.of(95);
-      public static final Angle kStartPosition = Degrees.of(122);
-
-      public static final boolean kForwardSoftLimitEnabled = true;
-      public static final boolean kReverseSoftLimitEnabled = true;
-    }
-
-    public static final class Outputs {
-      public static final Voltage kArmUp = Volts.of(2);
-      public static final Voltage kArmDown = Volts.of(-2);
-      public static final Voltage kIntakeIn = Volts.of(-12);
-      public static final Voltage kIntakeOut = Volts.of(12);
-      public static final Voltage kHold = Volts.of(-1);
-    }
   }
 
   public static final class AutoConstants {
@@ -277,5 +192,7 @@ public final class Constants {
     public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
     public static final AngularVelocityUnit kAngularVelocityUnit = kAngleUnit.per(kTimeUnit);
     public static final AngularAccelerationUnit kAngularAccelerationUnit = kAngularVelocityUnit.per(kTimeUnit);
+    public static final PerUnit<AngularVelocityUnit, VoltageUnit> kAngularKVUnit = kAngularVelocityUnit
+        .per(kVoltageUnit);
   }
 }

@@ -96,10 +96,13 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("elevator-leader-encoder-position", encoder.getPosition());
-    SmartDashboard.putNumber("elevator-follower-encoder-position", followerMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("elevator-encoder-velocity", encoder.getVelocity());
-    SmartDashboard.putNumber("elevator-motor-voltage", leaderMotor.getAppliedOutput() * leaderMotor.getBusVoltage());
+    SmartDashboard.putNumber("Elevator/leader/position", encoder.getPosition());
+    SmartDashboard.putNumber("Elevator/leader/velocity", encoder.getVelocity());
+    SmartDashboard.putNumber("Elevator/leader/voltage", leaderMotor.getAppliedOutput() * leaderMotor.getBusVoltage());
+    SmartDashboard.putNumber("Elevator/follower/position", followerMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Elevator/follower/velocity", followerMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Elevator/follower/voltage",
+        followerMotor.getAppliedOutput() * followerMotor.getBusVoltage());
   }
 
   public Distance getPosition() {
@@ -135,9 +138,17 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command idleCommand() {
-    return run(() -> this.setVoltage(ElevatorConstants.Outputs.kDown))
+    return this.downCommand()
         .until(() -> this.getPosition().lte(ElevatorConstants.Positions.kIntake))
         .andThen(this.stopCommand());
+  }
+
+  public Command upCommand() {
+    return run(() -> this.setVoltage(ElevatorConstants.Outputs.kUp));
+  }
+
+  public Command downCommand() {
+    return run(() -> this.setVoltage(ElevatorConstants.Outputs.kDown));
   }
 
   public Command stopCommand() {
