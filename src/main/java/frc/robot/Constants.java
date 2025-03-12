@@ -155,7 +155,7 @@ public final class Constants {
       public static final Distance kL4 = Feet.of(6);
 
       public static final Distance kMinPosition = Inches.of(7.5);
-      public static final Distance kMaxPosition = Inches.of(47.5);
+      public static final Distance kMaxPosition = Inches.of(40);
       public static final Distance kStartPosition = kMinPosition;
 
       public static final boolean kForwardSoftLimitEnabled = true;
@@ -163,8 +163,8 @@ public final class Constants {
     }
 
     public static final class Outputs {
-      public static final Voltage kUp = Volts.of(6);
-      public static final Voltage kDown = Volts.of(-2);
+      public static final Voltage kUp = Volts.of(12);
+      public static final Voltage kDown = Volts.of(-4);
     }
 
     public static final TimeUnit kTimeUnit = Seconds;

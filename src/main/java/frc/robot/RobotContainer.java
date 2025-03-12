@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.*;
 
 import java.io.File;
 
@@ -52,15 +52,15 @@ public class RobotContainer {
 	public RobotContainer() {
 		m_autonomousChooser.addOption("do nothing", new InstantCommand());
 		m_autonomousChooser.setDefaultOption("go back",
-				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> -1).until(
+				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> 1).until(
 						() -> m_drive.getPose().getTranslation()
 								.getDistance(DriveConstants.Positions.kStartingPose.getTranslation()) > 1));
-		SmartDashboard.putData(m_autonomousChooser);
+		SmartDashboard.putData("Autonomous", m_autonomousChooser);
 
 		configureButtonBindings();
 
 		m_drive.setDefaultCommand(driveFieldOrientedInverseDirectAngle());
-		m_elevator.setDefaultCommand(m_elevator.idleCommand());
+		m_elevator.setDefaultCommand(m_elevator.stopCommand());
 		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
 		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
 		algaeStick.setDefaultCommand(algaeStick.upCommand());
