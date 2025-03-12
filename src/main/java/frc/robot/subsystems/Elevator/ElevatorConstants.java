@@ -10,9 +10,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.LinearAccelerationUnit;
-import edu.wpi.first.units.LinearVelocityUnit;
-import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
@@ -20,7 +17,6 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
 import edu.wpi.first.units.measure.Voltage;
 
-/** Add your docs here. */
 public class ElevatorConstants {
 	public static final class LeaderMotor {
 		public static final int kCanId = 9;
@@ -37,7 +33,6 @@ public class ElevatorConstants {
 	}
 
 	public static final class Encoder {
-		public static final boolean kInverted = false;
 		public static final Distance kPositionConversion = Inches.of(0.2154);
 		public static final LinearVelocity kVelocityConversion = kPositionConversion.per(Minute);
 	}
@@ -72,10 +67,6 @@ public class ElevatorConstants {
 		public static final double kRampRate = 0.25;
 	}
 
-	/**
-	 * All positions will be distances from the ground to the [center of the
-	 * elevator? end of the outtake?]
-	 */
 	public static final class Positions {
 		public static final Distance kIntake = Inches.of(26.0);
 		public static final Distance kL2 = Feet.of(2).plus(Inches.of(7.875));
@@ -94,10 +85,4 @@ public class ElevatorConstants {
 		public static final Voltage kUp = Volts.of(12);
 		public static final Voltage kDown = Volts.of(-4);
 	}
-
-	public static final TimeUnit kTimeUnit = Seconds;
-	public static final VoltageUnit kVoltageUnit = Volts;
-	public static final DistanceUnit kDistanceUnit = Inches;
-	public static final LinearVelocityUnit kLinearVelocityUnit = kDistanceUnit.per(kTimeUnit);
-	public static final LinearAccelerationUnit kLinearAccelerationUnit = kLinearVelocityUnit.per(kTimeUnit);
 }
