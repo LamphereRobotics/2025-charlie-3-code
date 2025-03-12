@@ -62,20 +62,43 @@ public class AlgaeStick extends SubsystemBase {
     return Units.kAngularVelocityUnit.of(encoder.getVelocity());
   }
 
-  public Command upCommand() {
-    return run(this::up);
+  public boolean atLowPosition() {
+    return this.getPosition().isNear(AlgaeStickConstants.Positions.kLow, AlgaeStickConstants.Positions.kToleranceClose);
   }
 
-  public Command downCommand() {
-    return run(this::down);
+  public boolean atHighPosition() {
+    return this.getPosition().isNear(AlgaeStickConstants.Positions.kHigh,
+        AlgaeStickConstants.Positions.kToleranceClose);
   }
 
-  public Command holdCommand() {
-    return run(this::hold);
+  private Voltage moveToVoltage(Angle targetAngle) {
+    if (this.getPosition().isNear(targetAngle, AlgaeStickConstants.Positions.kToleranceFar)) {
+      return closeVoltage(targetAngle);
+    }
+
+    return AlgaeStickConstants.Outputs.kMoveFar.times(Math.signum(targetAngle.compareTo(this.getPosition())));
   }
 
-  public Command removeCommand() {
-    return run(this::remove);
+  private Voltage closeVoltage(Angle targetAngle) {
+    if (this.getPosition().isNear(targetAngle, AlgaeStickConstants.Positions.kToleranceClose)) {
+      return Units.kVoltageUnit.zero();
+    }
+
+    return AlgaeStickConstants.Outputs.kMoveClose.times(Math.signum(targetAngle.compareTo(this.getPosition())));
+  }
+
+  public Command highCommand() {
+    return this.holdPositionCommand(AlgaeStickConstants.Positions.kHigh)
+        .until(this::atHighPosition);
+  }
+
+  public Command lowCommand() {
+    return this.holdPositionCommand(AlgaeStickConstants.Positions.kLow)
+        .until(this::atLowPosition);
+  }
+
+  public Command holdPositionCommand(Angle targetAngle) {
+    return run(() -> this.setVoltage(moveToVoltage(targetAngle)));
   }
 
   public Command stopCommand() {
@@ -88,14 +111,6 @@ public class AlgaeStick extends SubsystemBase {
 
   public void down() {
     this.setVoltage(AlgaeStickConstants.Outputs.kDown);
-  }
-
-  public void hold() {
-    this.setVoltage(AlgaeStickConstants.Outputs.kHold);
-  }
-
-  public void remove() {
-    this.setVoltage(AlgaeStickConstants.Outputs.kRemove);
   }
 
   public void stop() {

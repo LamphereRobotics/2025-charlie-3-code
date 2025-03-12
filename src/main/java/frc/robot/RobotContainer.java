@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
@@ -63,7 +61,7 @@ public class RobotContainer {
 		m_elevator.setDefaultCommand(m_elevator.stopCommand());
 		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
 		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
-		algaeStick.setDefaultCommand(algaeStick.upCommand());
+		algaeStick.setDefaultCommand(algaeStick.highCommand());
 	}
 
 	private Command driveFieldOrientedInverseDirectAngle() {
@@ -103,23 +101,23 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
-		m_operatorsStick.button(10).whileTrue(algaeStick.downCommand()
-				.until(() -> algaeStick.getPosition().lte(Degrees.zero())).andThen(algaeStick.holdCommand()));
-		m_operatorsStick.button(9).whileTrue(algaeStick.removeCommand());
+		m_operatorsStick.button(2).whileTrue(algaeStick.lowCommand());
+		m_operatorsStick.button(5).whileTrue(m_elevator.downCommand());
+		m_operatorsStick.button(6).whileTrue(m_elevator.upCommand());
 
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro180));
-		// m_driverController.button(OIConstants.kIntakeLeft)
-		// .whileTrue(lockToHeading(new
-		// Rotation2d(DriveConstants.Positions.kLeftIntakeHeading)));
-		// m_driverController.button(OIConstants.kIntakeRight)
-		// .whileTrue(lockToHeading(new
-		// Rotation2d(DriveConstants.Positions.kRightIntakeHeading)));
 		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
+		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
+		// TODO: create robot relative control
 		// m_driverController.button(OIConstants.kRobotRelative).onTrue(m_robotDrive.setFieldRelativeCommand(false))
 		// .onFalse(m_robotDrive.setFieldRelativeCommand(true));
+		m_driverController.rightBumper().whileTrue(m_algaeIntake.outCommand());
+		m_driverController.leftBumper().whileTrue(pickupAlgae());
+		m_driverController.y().whileTrue(m_elevator.upCommand());
+		m_driverController.a().whileTrue(m_elevator.downCommand());
 	}
 
 	/**
