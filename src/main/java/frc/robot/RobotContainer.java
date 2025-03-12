@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
 import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
+import swervelib.SwerveInputStream;
 import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.AlgaeStick.AlgaeStick;
 import frc.robot.subsystems.Drive.Drive;
@@ -45,6 +46,17 @@ public class RobotContainer {
 
 	private final SendableChooser<Command> m_autonomousChooser = new SendableChooser<>();
 
+	private final SwerveInputStream driveInputStream = SwerveInputStream.of(m_drive.getSwerveDrive(),
+			() -> -m_driverController.getRawAxis(OIConstants.kTranslationX),
+			() -> -m_driverController.getRawAxis(OIConstants.kTranslationY))
+			.withControllerHeadingAxis(
+					() -> m_driverController.getRawAxis(OIConstants.kHeadingX),
+					() -> m_driverController.getRawAxis(OIConstants.kHeadingY))
+			.headingWhile(true)
+			.deadband(OIConstants.kDeadband)
+			.cubeTranslationControllerAxis(true)
+			.allianceRelativeControl(true);
+
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -58,6 +70,7 @@ public class RobotContainer {
 
 		configureButtonBindings();
 
+		m_drive.setDefaultCommand(m_drive.driveFieldOriented(driveInputStream));
 		m_drive.setDefaultCommand(driveFieldOrientedInverseDirectAngle());
 		m_elevator.setDefaultCommand(m_elevator.stopCommand());
 		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
