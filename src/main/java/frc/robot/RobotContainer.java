@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
 import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.AlgaeStick.AlgaeStick;
+import frc.robot.subsystems.Drive.Drive;
+import frc.robot.subsystems.Drive.DriveConstants;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a

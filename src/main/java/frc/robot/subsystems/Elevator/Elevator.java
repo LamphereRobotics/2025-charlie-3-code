@@ -1,5 +1,5 @@
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Elevator;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -16,7 +16,8 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
+
+import frc.robot.Constants.Units;
 
 public class Elevator extends SubsystemBase {
   private final SparkMax leaderMotor = new SparkMax(ElevatorConstants.LeaderMotor.kCanId,
@@ -26,16 +27,19 @@ public class Elevator extends SubsystemBase {
   private final RelativeEncoder encoder = leaderMotor.getEncoder();
 
   private final ElevatorFeedforward feedForward = new ElevatorFeedforward(
-      ElevatorConstants.Feedforward.kS.in(ElevatorConstants.kVoltageUnit),
+      ElevatorConstants.Feedforward.kS.in(Units.kVoltageUnit),
       ElevatorConstants.Feedforward.kG.in(
-          ElevatorConstants.kVoltageUnit),
+          Units.kVoltageUnit),
       ElevatorConstants.Feedforward.kV);
 
   private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-      ElevatorConstants.Constraints.kVelocity.in(ElevatorConstants.kLinearVelocityUnit),
-      ElevatorConstants.Constraints.kAcceleration.in(ElevatorConstants.kLinearAccelerationUnit));
+      ElevatorConstants.Constraints.kVelocity.in(
+          Units.kLinearVelocityUnit),
+      ElevatorConstants.Constraints.kAcceleration.in(Units.kLinearAccelerationUnit));
   private final ProfiledPIDController controller = new ProfiledPIDController(
-      ElevatorConstants.PID.kP.in(ElevatorConstants.kVoltageUnit.per(ElevatorConstants.kDistanceUnit)),
+      ElevatorConstants.PID.kP.in(
+          Units.kVoltageUnit.per(
+              Units.kDistanceUnit)),
       ElevatorConstants.PID.kI,
       ElevatorConstants.PID.kD,
       constraints);
@@ -51,15 +55,17 @@ public class Elevator extends SubsystemBase {
         .openLoopRampRate(ElevatorConstants.Constraints.kRampRate);
 
     leaderMotorConfig.encoder
-        .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(ElevatorConstants.kDistanceUnit))
+        .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(
+            Units.kDistanceUnit))
         .velocityConversionFactor(
-            ElevatorConstants.Encoder.kVelocityConversion.in(ElevatorConstants.kLinearVelocityUnit));
+            ElevatorConstants.Encoder.kVelocityConversion.in(Units.kLinearVelocityUnit));
 
     leaderMotorConfig.softLimit
         .forwardSoftLimitEnabled(ElevatorConstants.Positions.kForwardSoftLimitEnabled)
-        .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(ElevatorConstants.kDistanceUnit))
+        .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(
+            Units.kDistanceUnit))
         .reverseSoftLimitEnabled(ElevatorConstants.Positions.kReverseSoftLimitEnabled)
-        .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(ElevatorConstants.kDistanceUnit));
+        .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(Units.kDistanceUnit));
 
     followerMotorConfig
         .inverted(ElevatorConstants.FollowerMotor.kInverted)
@@ -68,30 +74,33 @@ public class Elevator extends SubsystemBase {
         .openLoopRampRate(ElevatorConstants.Constraints.kRampRate);
 
     followerMotorConfig.encoder
-        .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(ElevatorConstants.kDistanceUnit))
+        .positionConversionFactor(ElevatorConstants.Encoder.kPositionConversion.in(
+            Units.kDistanceUnit))
         .velocityConversionFactor(
-            ElevatorConstants.Encoder.kVelocityConversion.in(ElevatorConstants.kLinearVelocityUnit));
+            ElevatorConstants.Encoder.kVelocityConversion.in(Units.kLinearVelocityUnit));
 
     followerMotorConfig.softLimit
         .forwardSoftLimitEnabled(ElevatorConstants.Positions.kForwardSoftLimitEnabled)
-        .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(ElevatorConstants.kDistanceUnit))
+        .forwardSoftLimit(ElevatorConstants.Positions.kMaxPosition.in(
+            Units.kDistanceUnit))
         .reverseSoftLimitEnabled(ElevatorConstants.Positions.kReverseSoftLimitEnabled)
-        .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(ElevatorConstants.kDistanceUnit));
+        .reverseSoftLimit(ElevatorConstants.Positions.kMinPosition.in(Units.kDistanceUnit));
 
     leaderMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     followerMotor.configure(followerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     followerMotor.getEncoder()
-        .setPosition(ElevatorConstants.Positions.kStartPosition.in(ElevatorConstants.kDistanceUnit));
-    encoder.setPosition(ElevatorConstants.Positions.kStartPosition.in(ElevatorConstants.kDistanceUnit));
+        .setPosition(ElevatorConstants.Positions.kStartPosition.in(Units.kDistanceUnit));
+    encoder.setPosition(ElevatorConstants.Positions.kStartPosition.in(Units.kDistanceUnit));
 
     controller.setTolerance(ElevatorConstants.PID.kPositionTolerance.in(
-        ElevatorConstants.kDistanceUnit),
-        ElevatorConstants.PID.kVelocityTolerance.in(ElevatorConstants.kLinearVelocityUnit));
-    controller.setIZone(ElevatorConstants.PID.kIZone.in(ElevatorConstants.kDistanceUnit));
-    controller.setIntegratorRange(-ElevatorConstants.PID.kIntegratorRange.in(ElevatorConstants.kVoltageUnit),
+        Units.kDistanceUnit),
+        ElevatorConstants.PID.kVelocityTolerance.in(Units.kLinearVelocityUnit));
+    controller.setIZone(ElevatorConstants.PID.kIZone.in(Units.kDistanceUnit));
+    controller.setIntegratorRange(-ElevatorConstants.PID.kIntegratorRange.in(
+        Units.kVoltageUnit),
         ElevatorConstants.PID.kIntegratorRange
-            .in(ElevatorConstants.kVoltageUnit));
+            .in(Units.kVoltageUnit));
   }
 
   @Override
@@ -106,15 +115,15 @@ public class Elevator extends SubsystemBase {
   }
 
   public Distance getPosition() {
-    return ElevatorConstants.kDistanceUnit.of(encoder.getPosition());
+    return Units.kDistanceUnit.of(encoder.getPosition());
   }
 
   public LinearVelocity getVelocity() {
-    return ElevatorConstants.kLinearVelocityUnit.of(encoder.getVelocity());
+    return Units.kLinearVelocityUnit.of(encoder.getVelocity());
   }
 
   public void setGoal(Distance position) {
-    controller.setGoal(position.in(ElevatorConstants.kDistanceUnit));
+    controller.setGoal(position.in(Units.kDistanceUnit));
   }
 
   public boolean atGoal() {
@@ -122,9 +131,9 @@ public class Elevator extends SubsystemBase {
   }
 
   private void usePID() {
-    final double pidVoltage = controller.calculate(getPosition().in(ElevatorConstants.kDistanceUnit));
+    final double pidVoltage = controller.calculate(getPosition().in(Units.kDistanceUnit));
     final double feedForwardVoltage = feedForward.calculate(controller.getSetpoint().velocity);
-    this.setVoltage(ElevatorConstants.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
+    this.setVoltage(Units.kVoltageUnit.of(pidVoltage + feedForwardVoltage));
   }
 
   public Command holdPosition() {
@@ -156,7 +165,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void stop() {
-    setVoltage(ElevatorConstants.kVoltageUnit.zero());
+    setVoltage(Units.kVoltageUnit.zero());
   }
 
   public void setVoltage(Voltage output) {

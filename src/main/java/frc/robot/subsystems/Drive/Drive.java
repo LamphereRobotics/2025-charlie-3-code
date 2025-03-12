@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drive;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
 import swervelib.SwerveController;
@@ -76,7 +75,7 @@ public class Drive extends SubsystemBase {
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.DriveConstants.kMaxSpeedMetersPerSecond,
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(DriveConstants.kMaxSpeedMetersPerSecond,
           initialPose);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
@@ -118,7 +117,7 @@ public class Drive extends SubsystemBase {
   public Drive(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
     swerveDrive = new SwerveDrive(driveCfg,
         controllerCfg,
-        Constants.DriveConstants.kMaxSpeedMetersPerSecond,
+        DriveConstants.kMaxSpeedMetersPerSecond,
         new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
             Rotation2d.fromDegrees(0)));
   }
@@ -669,7 +668,7 @@ public class Drive extends SubsystemBase {
         headingX,
         headingY,
         getHeading().getRadians(),
-        Constants.DriveConstants.kMaxSpeedMetersPerSecond);
+        DriveConstants.kMaxSpeedMetersPerSecond);
   }
 
   /**
@@ -689,7 +688,7 @@ public class Drive extends SubsystemBase {
         scaledInputs.getY(),
         angle.getRadians(),
         getHeading().getRadians(),
-        Constants.DriveConstants.kMaxSpeedMetersPerSecond);
+        DriveConstants.kMaxSpeedMetersPerSecond);
   }
 
   /**
