@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
 public final class AlgaeStickConstants {
@@ -25,6 +27,17 @@ public final class AlgaeStickConstants {
         public static final AngularVelocity kVelocityConversion = kPositionConversion.per(Minute);
     }
 
+    public static final class PID {
+        public static final double kP = 0.044;
+        public static final double kI = 0.1;
+        public static final double kD = 0;
+
+        public static final Angle kPositionTolerance = Degrees.of(5);
+        public static final AngularVelocity kVelocityTolerance = DegreesPerSecond.of(1);
+        public static final Angle kIZone = kPositionTolerance;
+        public static final Voltage kIntegratorRange = Volts.of(0.3);
+    }
+
     public static final class Positions {
         public static final Angle kHigh = Degrees.of(90);
         public static final Angle kLow = Degrees.of(0);
@@ -32,9 +45,9 @@ public final class AlgaeStickConstants {
         public static final Angle kMinPosition = Degrees.of(-5);
         public static final Angle kMaxPosition = Degrees.of(95);
         public static final Angle kStartPosition = Degrees.of(223);
-        
+
         public static final Angle kToleranceClose = Degrees.of(2);
-        public static final Angle kToleranceFar = Degrees.of(10);
+        public static final Angle kToleranceFar = Degrees.of(15);
         public static final boolean kForwardSoftLimitEnabled = true;
         public static final boolean kReverseSoftLimitEnabled = true;
     }

@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -22,6 +23,11 @@ public class AlgaeStick extends SubsystemBase {
   private final SparkMax motor = new SparkMax(AlgaeStickConstants.Motor.kCanId,
       AlgaeStickConstants.Motor.kMotorType);
   private final RelativeEncoder encoder = motor.getEncoder();
+
+  private final PIDController pidController = new PIDController(
+      AlgaeStickConstants.PID.kP,
+      AlgaeStickConstants.PID.kI,
+      AlgaeStickConstants.PID.kD);
 
   public AlgaeStick() {
     SparkMaxConfig motorConfig = new SparkMaxConfig();
@@ -45,6 +51,14 @@ public class AlgaeStick extends SubsystemBase {
     motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder.setPosition(AlgaeStickConstants.Positions.kStartPosition.in(Units.kAngleUnit));
+
+    pidController.setTolerance(
+        AlgaeStickConstants.PID.kPositionTolerance.in(Units.kAngleUnit),
+        AlgaeStickConstants.PID.kVelocityTolerance.in(Units.kAngularVelocityUnit));
+    pidController.setIZone(AlgaeStickConstants.PID.kIZone.in(Units.kAngleUnit));
+    pidController.setIntegratorRange(
+        -AlgaeStickConstants.PID.kIntegratorRange.in(Units.kVoltageUnit),
+        AlgaeStickConstants.PID.kIntegratorRange.in(Units.kVoltageUnit));
   }
 
   @Override
@@ -52,6 +66,8 @@ public class AlgaeStick extends SubsystemBase {
     SmartDashboard.putNumber("AlgaeStick/position", encoder.getPosition());
     SmartDashboard.putNumber("AlgaeStick/velocity", encoder.getVelocity());
     SmartDashboard.putNumber("AlgaeStick/voltage", motor.getAppliedOutput() * motor.getBusVoltage());
+    SmartDashboard.putNumber("AlgaeStick/setpoint", pidController.getSetpoint());
+    SmartDashboard.putNumber("AlgaeStick/pidOutput", pidController.calculate(this.getPosition().in(Units.kAngleUnit)));
   }
 
   public Angle getPosition() {
@@ -62,43 +78,29 @@ public class AlgaeStick extends SubsystemBase {
     return Units.kAngularVelocityUnit.of(encoder.getVelocity());
   }
 
-  public boolean atLowPosition() {
-    return this.getPosition().isNear(AlgaeStickConstants.Positions.kLow, AlgaeStickConstants.Positions.kToleranceClose);
+  public boolean atSetpoint() {
+    return this.pidController.atSetpoint();
   }
 
-  public boolean atHighPosition() {
-    return this.getPosition().isNear(AlgaeStickConstants.Positions.kHigh,
-        AlgaeStickConstants.Positions.kToleranceClose);
+  public void setSetpoint(Angle setpoint) {
+    pidController.setSetpoint(setpoint.in(Units.kAngleUnit));
   }
 
-  private Voltage moveToVoltage(Angle targetAngle) {
-    if (this.getPosition().isNear(targetAngle, AlgaeStickConstants.Positions.kToleranceFar)) {
-      return closeVoltage(targetAngle);
-    }
-
-    return AlgaeStickConstants.Outputs.kMoveFar.times(Math.signum(targetAngle.compareTo(this.getPosition())));
-  }
-
-  private Voltage closeVoltage(Angle targetAngle) {
-    if (this.getPosition().isNear(targetAngle, AlgaeStickConstants.Positions.kToleranceClose)) {
-      return Units.kVoltageUnit.zero();
-    }
-
-    return AlgaeStickConstants.Outputs.kMoveClose.times(Math.signum(targetAngle.compareTo(this.getPosition())));
+  public void usePid() {
+    this.setVoltage(Units.kVoltageUnit.of(pidController.calculate(this.getPosition().in(Units.kAngleUnit))));
   }
 
   public Command highCommand() {
-    return this.holdPositionCommand(AlgaeStickConstants.Positions.kHigh)
-        .until(this::atHighPosition);
+    return this.holdPositionCommand(AlgaeStickConstants.Positions.kHigh);
+
   }
 
   public Command lowCommand() {
-    return this.holdPositionCommand(AlgaeStickConstants.Positions.kLow)
-        .until(this::atLowPosition);
+    return this.holdPositionCommand(AlgaeStickConstants.Positions.kLow);
   }
 
   public Command holdPositionCommand(Angle targetAngle) {
-    return run(() -> this.setVoltage(moveToVoltage(targetAngle)));
+    return startRun(() -> this.setSetpoint(targetAngle), this::usePid);
   }
 
   public Command stopCommand() {
