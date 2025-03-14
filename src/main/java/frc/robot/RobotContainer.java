@@ -75,6 +75,16 @@ public class RobotContainer {
 				() -> m_driverController.getRawAxis(OIConstants.kHeadingY));
 	}
 
+	private Command driveFieldOrientedStickDirectAngle() {
+		return m_drive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
+						OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
+						OIConstants.kTranslationY), OIConstants.kDeadband),
+				() -> -m_driverController.getRawAxis(OIConstants.kHeadingY),
+				() -> m_driverController.getRawAxis(OIConstants.kHeadingX));
+	}
+
 	@SuppressWarnings("unused")
 	private Command driveFieldOriented() {
 		return m_drive.driveCommand(
@@ -109,6 +119,7 @@ public class RobotContainer {
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro180));
 		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
+m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
 		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
