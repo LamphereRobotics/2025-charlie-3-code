@@ -27,7 +27,6 @@ public final class GroundAlgaeArmConstants {
 
     public static final class Positions {
         public static final Angle kPickup = Degrees.of(40);
-        public static final Angle kHold = Degrees.of(90);
         public static final Angle kScore = Degrees.of(90);
 
         public static final Angle kMinPosition = Degrees.of(35);

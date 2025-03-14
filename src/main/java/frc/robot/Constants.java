@@ -62,13 +62,8 @@ public final class Constants {
     public static final int kMoveAlgaeArm = 1;
 
     // Operator buttons
-    public static final int kIntakeCoral = 10;
-    public static final int kScoreL2 = 9;
-    public static final int kScoreL3 = 7;
-    public static final int kScoreL4 = 8;
     public static final int kIntakeAlgae = 4;
     public static final int kScoreAlgae = 1;
-    public static final int kEjectCoral = 2;
   }
 
   public static final class AutoConstants {
