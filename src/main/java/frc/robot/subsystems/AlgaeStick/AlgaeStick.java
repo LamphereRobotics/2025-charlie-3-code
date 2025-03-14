@@ -99,6 +99,10 @@ public class AlgaeStick extends SubsystemBase {
     return this.holdPositionCommand(AlgaeStickConstants.Positions.kLow);
   }
 
+  public Command climbCommand() {
+    return this.holdPositionCommand(AlgaeStickConstants.Positions.kClimb);
+  }
+
   public Command holdPositionCommand(Angle targetAngle) {
     return startRun(() -> this.setSetpoint(targetAngle), this::usePid);
   }

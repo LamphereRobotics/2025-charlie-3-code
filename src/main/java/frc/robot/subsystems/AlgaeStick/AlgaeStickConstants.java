@@ -38,9 +38,10 @@ public final class AlgaeStickConstants {
 
     public static final class Positions {
         public static final Angle kHigh = Degrees.of(90);
-        public static final Angle kLow = Degrees.of(0);
+        public static final Angle kLow = Degrees.of(-20);
+        public static final Angle kClimb = Degrees.of(-60);
 
-        public static final Angle kMinPosition = Degrees.of(-5);
+        public static final Angle kMinPosition = Degrees.of(-60);
         public static final Angle kMaxPosition = Degrees.of(95);
         public static final Angle kStartPosition = Degrees.of(223);
 

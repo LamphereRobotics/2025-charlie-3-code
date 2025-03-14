@@ -16,7 +16,7 @@ public final class DriveConstants {
 	public static final double kMaxSpeedMetersPerSecond = 4.2;
 
 	public static final class Positions {
-		public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(158.5),
+		public static final Pose2d kStartingPose = new Pose2d(FieldConstants.kStartingLine, Inches.of(79.25 * 3),
 				Rotation2d.kZero);
 
 		public static final Angle kProcessorHeading = Degrees.of(90);
