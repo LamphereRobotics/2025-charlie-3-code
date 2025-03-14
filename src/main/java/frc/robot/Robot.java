@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Robot/loopTime", Timer.getFPGATimestamp() - startTime);
     SmartDashboard.putNumber("Robot/batteryVoltage", RobotController.getBatteryVoltage());
     SmartDashboard.putBoolean("Robot/isBrownedOut", RobotController.isBrownedOut());
+    SmartDashboard.putNumber("Robot/matchTime", Timer.getMatchTime());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

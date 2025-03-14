@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
 import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
@@ -105,6 +107,17 @@ public class RobotContainer {
 				() -> heading);
 	}
 
+	private Command lockToAlgae() {
+		final Supplier<Rotation2d> heading = () -> m_drive.getHeading()
+				.minus(Rotation2d.fromDegrees(LimelightHelpers.getTX(LimelightConstants.kLimelightName)));
+		return m_drive.driveCommand(
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
+						OIConstants.kDeadband),
+				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
+						OIConstants.kTranslationY), OIConstants.kDeadband),
+				heading);
+	}
+
 	private Command pickupAlgae() {
 		return m_algaeArm.downCommand().raceWith(m_algaeIntake.inCommand());
 	}
@@ -125,6 +138,7 @@ public class RobotContainer {
 		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
 		m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
+		m_driverController.rightBumper().whileTrue(lockToAlgae());
 		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
