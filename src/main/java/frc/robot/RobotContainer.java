@@ -22,7 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.GroundAlgaeArm.GroundAlgaeArm;
 import frc.robot.subsystems.GroundAlgaeIntake.GroundAlgaeIntake;
 import frc.robot.subsystems.Elevator.Elevator;
-import frc.robot.subsystems.AlgaeStick.AlgaeStick;
+// import frc.robot.subsystems.AlgaeStick.AlgaeStick;
 import frc.robot.subsystems.Drive.Drive;
 import frc.robot.subsystems.Drive.DriveConstants;
 
@@ -38,7 +38,7 @@ public class RobotContainer {
 	private final Elevator m_elevator = new Elevator();
 	private final GroundAlgaeArm m_algaeArm = new GroundAlgaeArm();
 	private final GroundAlgaeIntake m_algaeIntake = new GroundAlgaeIntake();
-	private final AlgaeStick algaeStick = new AlgaeStick();
+	// private final AlgaeStick algaeStick = new AlgaeStick();
 
 	// The driver's controller
 	private final CommandXboxController m_driverController = new CommandXboxController(
@@ -64,7 +64,7 @@ public class RobotContainer {
 		m_elevator.setDefaultCommand(m_elevator.stopCommand());
 		m_algaeArm.setDefaultCommand(m_algaeArm.upCommand());
 		m_algaeIntake.setDefaultCommand(m_algaeIntake.idleCommand());
-		algaeStick.setDefaultCommand(algaeStick.highCommand());
+		// algaeStick.setDefaultCommand(algaeStick.highCommand());
 	}
 
 	private Command driveFieldOrientedInverseDirectAngle() {
@@ -118,18 +118,28 @@ public class RobotContainer {
 				heading);
 	}
 
+	private Command trackAlgae() {
+		return m_drive.run(() -> {
+			if (LimelightHelpers.getTargetCount(LimelightConstants.kLimelightName) > 0) {
+				lockToAlgae().execute();
+			} else {
+				m_drive.getDefaultCommand().execute();
+			}
+		});
+	}
+
 	private Command pickupAlgae() {
 		return m_algaeArm.downCommand().raceWith(m_algaeIntake.inCommand());
 	}
 
 	private Command climbMode() {
-		return m_algaeArm.downCommand().alongWith(algaeStick.climbCommand());
+		return m_algaeArm.downCommand();
 	}
 
 	private void configureButtonBindings() {
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
-		m_operatorsStick.button(2).whileTrue(algaeStick.lowCommand());
+		// m_operatorsStick.button(2).whileTrue(algaeStick.lowCommand());
 		m_operatorsStick.button(5).whileTrue(m_elevator.downCommand());
 		m_operatorsStick.button(6).whileTrue(m_elevator.upCommand());
 		m_operatorsStick.button(11).whileTrue(climbMode());
@@ -138,7 +148,7 @@ public class RobotContainer {
 		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
 		m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
-		m_driverController.rightBumper().whileTrue(lockToAlgae());
+		m_driverController.rightBumper().whileTrue(trackAlgae());
 		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
@@ -150,7 +160,7 @@ public class RobotContainer {
 		m_driverController.leftBumper().and(DriverStation::isTest).whileTrue(pickupAlgae());
 		m_driverController.y().and(DriverStation::isTest).whileTrue(m_elevator.upCommand());
 		m_driverController.a().and(DriverStation::isTest).whileTrue(m_elevator.downCommand());
-		m_driverController.leftTrigger().and(DriverStation::isTest).whileTrue(algaeStick.lowCommand());
+		// m_driverController.leftTrigger().and(DriverStation::isTest).whileTrue(algaeStick.lowCommand());
 	}
 
 	/**
