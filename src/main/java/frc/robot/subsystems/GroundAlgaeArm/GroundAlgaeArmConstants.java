@@ -26,12 +26,12 @@ public final class GroundAlgaeArmConstants {
     }
 
     public static final class Positions {
-        public static final Angle kPickup = Degrees.of(40);
+        public static final Angle kPickup = Degrees.of(30);
         public static final Angle kScore = Degrees.of(90);
 
-        public static final Angle kMinPosition = Degrees.of(35);
+        public static final Angle kMinPosition = Degrees.of(30);
         public static final Angle kMaxPosition = Degrees.of(90);
-        public static final Angle kStartPosition = Degrees.of(90);
+        public static final Angle kStartPosition = Degrees.of(115);
 
         public static final boolean kForwardSoftLimitEnabled = true;
         public static final boolean kReverseSoftLimitEnabled = true;
