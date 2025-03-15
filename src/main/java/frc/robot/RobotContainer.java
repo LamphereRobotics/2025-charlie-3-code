@@ -140,6 +140,7 @@ public class RobotContainer {
 		m_operatorsStick.button(OIConstants.kScoreAlgae).whileTrue(m_algaeIntake.outCommand());
 		m_operatorsStick.button(OIConstants.kIntakeAlgae).whileTrue(pickupAlgae());
 		// m_operatorsStick.button(2).whileTrue(algaeStick.lowCommand());
+		m_operatorsStick.button(2).whileTrue(m_elevator.climbCommand().alongWith(climbMode()));
 		m_operatorsStick.button(5).whileTrue(m_elevator.downCommand());
 		m_operatorsStick.button(6).whileTrue(m_elevator.upCommand());
 		m_operatorsStick.button(11).whileTrue(climbMode());

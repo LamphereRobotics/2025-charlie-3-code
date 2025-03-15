@@ -32,6 +32,10 @@ public class ElevatorConstants {
 		public static final MotorType kMotorType = MotorType.kBrushless;
 	}
 
+	public static final class LimitSwitch {
+        public static final int kPort = 9;
+    }
+
 	public static final class Encoder {
 		public static final Distance kPositionConversion = Inches.of(0.2154);
 		public static final LinearVelocity kVelocityConversion = kPositionConversion.per(Minute);
@@ -77,12 +81,14 @@ public class ElevatorConstants {
 		public static final Distance kMaxPosition = Inches.of(32);
 		public static final Distance kStartPosition = kMinPosition;
 
+		public static final Distance kTolerance = Inches.of(0.5);
+
 		public static final boolean kForwardSoftLimitEnabled = true;
 		public static final boolean kReverseSoftLimitEnabled = true;
 	}
 
 	public static final class Outputs {
 		public static final Voltage kUp = Volts.of(12);
-		public static final Voltage kDown = Volts.of(-4);
+		public static final Voltage kDown = Volts.of(-6);
 	}
 }
