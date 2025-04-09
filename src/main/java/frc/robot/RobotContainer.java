@@ -5,15 +5,25 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.function.Supplier;
+
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -45,18 +55,46 @@ public class RobotContainer {
 			OIConstants.kDriverControllerPort);
 	private final CommandJoystick m_operatorsStick = new CommandJoystick(OIConstants.kOperatorStickPort);
 
-	private final SendableChooser<Command> m_autonomousChooser = new SendableChooser<>();
+	// private final SendableChooser<Command> m_autonomousChooser = new
+	// SendableChooser<>();
+	private final SendableChooser<Command> autoChooser;
+
+	private final Command driveToProcessor;
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer() {
-		m_autonomousChooser.addOption("do nothing", new InstantCommand());
-		m_autonomousChooser.setDefaultOption("go back",
-				m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> 1).until(
-						() -> m_drive.getPose().getTranslation()
-								.getDistance(DriveConstants.Positions.kStartingPose.getTranslation()) > 1));
-		SmartDashboard.putData("Autonomous", m_autonomousChooser);
+		autoChooser = AutoBuilder.buildAutoChooser();
+		SmartDashboard.putData("Autonomous", autoChooser);
+
+		// m_autonomousChooser.addOption("do nothing", new InstantCommand());
+		// m_autonomousChooser.setDefaultOption("go back",
+		// m_drive.driveCommand(() -> -1, () -> 0, () -> 0, () -> 1).until(
+		// () -> m_drive.getPose().getTranslation()
+		// .getDistance(DriveConstants.Positions.kStartingPose.getTranslation()) > 1));
+		// SmartDashboard.putData("Autonomous", m_autonomousChooser);
+
+		Command _driveToProcessor;
+		try {
+			// Load the path we want to pathfind to and follow
+			PathPlannerPath path = PathPlannerPath.fromPathFile("Approach Processor");
+			// Create the constraints to use while pathfinding. The constraints defined in
+			// the path will only be used for the path.
+			PathConstraints constraints = new PathConstraints(
+					3.0, 4.0,
+					Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+			// Since AutoBuilder is configured, we can use it to build pathfinding commands
+			_driveToProcessor = AutoBuilder.pathfindThenFollowPath(
+					path,
+					constraints);
+		} catch (FileVersionException | IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			_driveToProcessor = Commands.none();
+			e.printStackTrace();
+		}
+		driveToProcessor = _driveToProcessor;
 
 		configureButtonBindings();
 
@@ -150,6 +188,7 @@ public class RobotContainer {
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
 		m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
 		m_driverController.rightBumper().whileTrue(trackAlgae());
+		m_driverController.a().whileTrue(m_drive.run(m_drive::lock));
 		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
@@ -170,6 +209,6 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		return m_autonomousChooser.getSelected();
+		return autoChooser.getSelected();
 	}
 }
