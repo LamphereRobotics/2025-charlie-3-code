@@ -106,15 +106,19 @@ public class RobotContainer {
 	}
 
 	private Command driveFieldOrientedInverseDirectAngle() {
-		return m_drive.driveCommand(
-				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
-						OIConstants.kDeadband),
-				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
-						OIConstants.kTranslationY), OIConstants.kDeadband),
-				() -> m_driverController.getRawAxis(OIConstants.kHeadingX),
-				() -> m_driverController.getRawAxis(OIConstants.kHeadingY));
+		return m_drive.startRun(
+				() -> lockToHeading(m_drive.getHeading()).execute(),
+				() -> m_drive.driveCommand(
+						() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
+								OIConstants.kDeadband),
+						() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(
+								OIConstants.kTranslationY), OIConstants.kDeadband),
+						() -> m_driverController.getRawAxis(OIConstants.kHeadingX),
+						() -> m_driverController.getRawAxis(OIConstants.kHeadingY))
+						.execute());
 	}
 
+	@SuppressWarnings("unused")
 	private Command driveFieldOrientedStickDirectAngle() {
 		return m_drive.driveCommand(
 				() -> -MathUtil.applyDeadband(m_driverController.getRawAxis(OIConstants.kTranslationX),
@@ -186,7 +190,7 @@ public class RobotContainer {
 		m_driverController.button(OIConstants.kZeroGyro).onTrue(new InstantCommand(m_drive::zeroGyro180));
 		m_driverController.rightTrigger()
 				.whileTrue(lockToHeading(new Rotation2d(DriveConstants.Positions.kProcessorHeading)));
-		m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
+		// m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
 		m_driverController.rightBumper().whileTrue(trackAlgae());
 		m_driverController.a().whileTrue(m_drive.run(m_drive::lock));
 		m_driverController.b().whileTrue(driveToProcessor);
