@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Leave Outer Cage"
+            "pathName": "Leave Processor"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Auto Loop"
+            "pathName": "CCW Loop"
           }
         }
       ]
