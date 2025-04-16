@@ -189,6 +189,7 @@ public class RobotContainer {
 		m_driverController.leftTrigger().whileTrue(driveFieldOrientedStickDirectAngle());
 		m_driverController.rightBumper().whileTrue(trackAlgae());
 		m_driverController.a().whileTrue(m_drive.run(m_drive::lock));
+		m_driverController.b().whileTrue(driveToProcessor);
 		// TODO: create drive slow mode
 		// m_driverController.button(OIConstants.kSlowMode).onTrue(m_robotDrive.setSlowModeCommand(true))
 		// .onFalse(m_robotDrive.setSlowModeCommand(false));
